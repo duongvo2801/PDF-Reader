@@ -1,7 +1,6 @@
 package com.example.pdfreader.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,7 +57,6 @@ class PdfFragment : Fragment(){
 
         val adapter = FileAdapter(pdfFiles, requireContext())
         binding.rcyPdfFile.adapter = adapter
-
 
     }
 

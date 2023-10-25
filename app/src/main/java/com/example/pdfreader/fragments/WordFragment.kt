@@ -1,12 +1,11 @@
 package com.example.pdfreader.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.pdfreader.R
 import com.example.pdfreader.adapters.FileAdapter
 import com.example.pdfreader.databinding.FragmentWordBinding
 import com.example.pdfreader.entities.FileItem
@@ -39,7 +38,7 @@ class WordFragment : Fragment() {
         binding.rcyWordFile.layoutManager = LinearLayoutManager(context)
         val fileHelper = loadFileFromDevice(requireContext())
 
-        val adapter = FileAdapter(fileHelper.getAllFilesbyExtension("doc"), requireContext())
+        val adapter = FileAdapter(fileHelper.getAllFilesbyExtension("docx"), requireContext())
         binding.rcyWordFile.adapter = adapter
     }
 

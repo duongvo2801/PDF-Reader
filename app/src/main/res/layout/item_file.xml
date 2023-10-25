@@ -3,6 +3,7 @@
     android:padding="5dp"
     android:layout_margin="4dp"
     android:background="@drawable/custom_file_item"
+    android:id="@+id/layoutFile"
     android:layout_width="match_parent"
     android:layout_height="@dimen/_50sdp">
 
@@ -18,6 +19,7 @@
         android:layout_marginLeft="@dimen/_6sdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="vertical">
 
         <TextView
@@ -35,16 +37,16 @@
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/date_file"
-                android:text=""
-                android:textSize="15sp"
+                android:text="date"
+                android:textSize="14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"/>
 
             <TextView
                 android:id="@+id/file_size"
-                android:text=""
-                android:textSize="15sp"
+                android:text="size"
+                android:textSize="14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="parent"
-        android:background="@color/red"
+        android:background="@color/pdf"
         android:layout_marginBottom="7dp"
         tools:ignore="MissingConstraints" >
         <ImageView
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
             android:gravity="center"
-            android:text="Search"
+            android:text="@string/toolbar_search"
             android:textColor="@color/white"
             android:textSize="20sp" />
     </RelativeLayout>

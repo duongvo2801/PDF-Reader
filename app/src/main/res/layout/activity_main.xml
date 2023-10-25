@@ -57,7 +57,7 @@
             android:layout_margin="5dp"
             android:src="@drawable/ic_baseline_image_24"
             android:visibility="gone"
-            android:backgroundTint="@color/red"
+            android:backgroundTint="@color/pdf"
             app:layout_constraintBottom_toBottomOf="@+id/viewPager"
             app:layout_constraintEnd_toEndOf="parent"
             tools:ignore="MissingConstraints" />
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:visibility="gone"
-            android:backgroundTint="@color/red"
+            android:backgroundTint="@color/pdf"
             android:src="@drawable/ic_baseline_qr_code_scanner_24"
             app:layout_constraintBottom_toBottomOf="@+id/viewPager"
             app:layout_constraintEnd_toEndOf="parent"
@@ -78,7 +78,7 @@
             android:layout_margin="5dp"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_add_24"
-            android:backgroundTint="@color/red"
+            android:backgroundTint="@color/pdf"
             app:layout_constraintBottom_toBottomOf="@+id/viewPager"
             app:layout_constraintEnd_toEndOf="parent"
             tools:ignore="MissingConstraints" />

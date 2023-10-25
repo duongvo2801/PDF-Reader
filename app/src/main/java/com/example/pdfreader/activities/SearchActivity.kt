@@ -2,13 +2,11 @@ package com.example.pdfreader.activities
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.core.view.size
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pdfreader.R
@@ -37,7 +35,7 @@ class SearchActivity : AppCompatActivity() {
         itemSearch()
 
         goBackHome()
-        window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.red)
+        window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.pdf)
     }
 
     fun loadAllFilePDF() {

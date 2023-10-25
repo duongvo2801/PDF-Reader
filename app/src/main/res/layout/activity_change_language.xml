@@ -13,7 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="parent"
         android:padding="3dp"
-        android:background="@color/red"
+        android:background="@color/pdf"
         android:layout_marginBottom="7dp"
         tools:ignore="MissingConstraints" >
         <ImageView
@@ -52,7 +52,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="English"
+            android:text="@string/language_en"
             android:textSize="20sp"
             android:gravity="center"
             android:textStyle="bold"
@@ -60,8 +60,10 @@
             android:layout_marginRight="4dp"
             />
         <RadioButton
+            android:id="@+id/radioEnglish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="change"
             />
     </LinearLayout>
 
@@ -83,7 +85,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Vietnam"
+            android:text="@string/language_vi"
             android:textSize="20sp"
             android:gravity="center"
             android:textStyle="bold"
@@ -91,8 +93,10 @@
             android:layout_marginRight="4dp"
             />
         <RadioButton
+            android:id="@+id/radioVietnam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="change"
             />
     </LinearLayout>
 

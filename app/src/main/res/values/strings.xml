@@ -10,35 +10,30 @@
     <string name="toolbar_search">Search</string>
     <string name="toolbar_language">Language</string>
     <string name="toolbar_premium">Get Premium</string>
-    <string name="toolbar_setting">Setting</string>
+    <string name="toolbar_sort">Sort</string>
     <string name="toolbar_name">Name</string>
     <string name="toolbar_edit">Edit</string>
     <string name="toolbar_size">Size</string>
 
-    <string name="language_en" translatable="false">English</string>
-    <string name="language_vi" translatable="false">Vietnamese</string>
-    <string name="language_code_en" translatable="false">en</string>
-    <string name="language_code_vi" translatable="false">vi</string>
+    <string name="language_en" >English</string>
+    <string name="language_vi" >Vietnamese</string>
+
+    // string array sort
+    <string name="sort_asc" >Ascending</string>
+    <string name="sort_desc" >Descending</string>
 
     // float add
     <string name="float_add_image">Image</string>
     <string name="float_add_scan_document">Scan document</string>
 
     // bottom tab
-    <string name="document" translatable="true">Document</string>
-    <string name="recently" translatable="true">Recently</string>
-    <string name="favorite" translatable="true">Favorite</string>
+    <string name="document">Document</string>
+    <string name="recently">Recent</string>
+    <string name="favorite">Favorite</string>
+    <string name="image_to_pdf">Image to PDF</string>
+    <string name="scan_document">Scan document</string>
+    <string name="dialog_title">Sort</string>
+    <string name="toolbar_coming_soon">Coming soon</string>
 
-    // show language
-    <string-array name="language_names">
-        <item>@string/language_en</item>
-        <item>@string/language_vi</item>
-    </string-array>
-
-    // list language code
-    <string-array name="language_codes">
-        <item>@string/language_code_en</item>
-        <item>@string/language_code_vi</item>
-    </string-array>
 
 </resources>

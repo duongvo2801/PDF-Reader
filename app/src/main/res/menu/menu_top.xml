@@ -26,28 +26,11 @@
     </item>
 
     <item
-        android:title="@string/toolbar_setting"
+        android:title="@string/toolbar_sort"
         android:id="@+id/sort"
-        android:icon="@drawable/ic_baseline_settings_24"
+        android:icon="@drawable/baseline_sort_24"
         app:showAsAction="always">
-        <menu>
-            <item app:showAsAction="never"
-                android:title="@string/toolbar_name"
-                android:id="@+id/sort_by_name">
 
-            </item>
-
-            <item app:showAsAction="never"
-                android:title="@string/toolbar_edit"
-                android:id="@+id/sort_by_change">
-
-            </item>
-            <item app:showAsAction="never"
-                android:title="@string/toolbar_size"
-                android:id="@+id/sort_by_size">
-
-            </item>
-        </menu>
 
     </item>
 

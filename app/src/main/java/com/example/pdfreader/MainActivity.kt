@@ -1,9 +1,12 @@
 package com.example.pdfreader
 
 import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -14,13 +17,14 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.example.pdfreader.activities.ChangeLanguageActivity
 import com.example.pdfreader.activities.SearchActivity
+import com.example.pdfreader.adapters.FileAdapter
 import com.example.pdfreader.adapters.ViewPagerAdapter
+import com.example.pdfreader.data.Libs
 import com.example.pdfreader.databinding.ActivityMainBinding
 import com.example.pdfreader.fragments.PdfFragment
 import com.example.pdfreader.fragments.WordFragment
 import com.example.pptreader.fragments.ExcelFragment
 import com.example.pptreader.fragments.PptFragment
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.karumi.dexter.Dexter
@@ -32,7 +36,7 @@ import com.karumi.dexter.listener.single.PermissionListener
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var dialog : BottomSheetDialog
+    private lateinit var adapter: FileAdapter
 
     lateinit var addFAB: FloatingActionButton
     lateinit var imageToPdfFAB: FloatingActionButton
@@ -73,6 +77,16 @@ class MainActivity : AppCompatActivity() {
             .check()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        // Change language
+        val prefs = getSharedPreferences("CommonPrefs", Activity.MODE_PRIVATE)
+        val lang = prefs.getString("Language", "en") ?: "en"
+        Log.e("DEBUG", lang)
+        Libs.loadLocale(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -93,7 +107,7 @@ class MainActivity : AppCompatActivity() {
 
         toolBar.setBackgroundColor(Color.RED)
         binding.tabLayoutView.setBackgroundColor(Color.RED)
-        window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.red)
+        window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.pdf)
 
         binding.viewpage.apply {
             adapter = pagerAdapter
@@ -108,24 +122,24 @@ class MainActivity : AppCompatActivity() {
                     when(it) {
                         0 -> {
 
-                            toolBar.setBackgroundColor(Color.RED)
-                            binding.tabLayoutView.setBackgroundColor(Color.RED)
-                            window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.red)
+                            toolBar.setBackgroundColor(Color.parseColor("#b30b00"))
+                            binding.tabLayoutView.setBackgroundColor(Color.parseColor("#b30b00"))
+                            window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.pdf)
                         }
                         1 -> {
-                            toolBar.setBackgroundColor(Color.BLUE)
-                            binding.tabLayoutView.setBackgroundColor(Color.BLUE)
-                            window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.blue)
+                            toolBar.setBackgroundColor(Color.parseColor("#185abd"))
+                            binding.tabLayoutView.setBackgroundColor(Color.parseColor("#185abd"))
+                            window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.word)
                         }
                         2 -> {
-                            toolBar.setBackgroundColor(Color.GREEN)
-                            binding.tabLayoutView.setBackgroundColor(Color.GREEN)
-                            window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.green)
+                            toolBar.setBackgroundColor(Color.parseColor("#107a40"))
+                            binding.tabLayoutView.setBackgroundColor(Color.parseColor("#107a40"))
+                            window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.excel)
                         }
                         3 -> {
-                            toolBar.setBackgroundColor(Color.parseColor("#FF9800"))
-                            binding.tabLayoutView.setBackgroundColor(Color.parseColor("#FF9800"))
-                            window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.orange)
+                            toolBar.setBackgroundColor(Color.parseColor("#c43f1d"))
+                            binding.tabLayoutView.setBackgroundColor(Color.parseColor("#c43f1d"))
+                            window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.ppt)
 
                         }
                         else -> {
@@ -149,15 +163,19 @@ class MainActivity : AppCompatActivity() {
                     when(binding.viewpage.currentItem) {
                         0 -> {
                             pdfFragment.loadAllFilePDF()
+                            true
                         }
                         1 -> {
                             wordFragment.loadAllFileWord()
+                            true
                         }
                         2 -> {
                             excelFragment.loadAllFileExcel()
+                            true
                         }
                         3 -> {
                             pptFragment.loadAllFilePPT()
+                            true
                         }
                     }
 
@@ -177,10 +195,12 @@ class MainActivity : AppCompatActivity() {
                         2 -> {
                             //excel
                             excelFragment.loadFavoriteFileExcel()
+                            true
                         }
                         3 -> {
                             //ppt
                             pptFragment.loadFavoriteFilePpt()
+                            true
                         }
                     }
 
@@ -195,6 +215,8 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
             }
+//            navigationmenu.getMenu().clear();
+//            myBottomNavigation.inflateMenu(R.menu.menu_bottom_navigation);
         }
 
 
@@ -209,7 +231,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.sort -> {
-
+                softDialog()
             }
             R.id.search -> {
                 startActivity(Intent(this, SearchActivity::class.java))
@@ -219,12 +241,36 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.get_premium -> {
-                Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.toolbar_coming_soon), Toast.LENGTH_SHORT).show()
 
             }
         }
+
         return super.onOptionsItemSelected(item)
     }
+
+    private fun softDialog() {
+        var options = arrayOf(getString(R.string.sort_asc), getString(R.string.sort_desc))
+        val dialog = AlertDialog.Builder(this)
+        dialog.setTitle(getString(R.string.dialog_title))
+            .setItems(options){
+                dialogIntetface, i ->
+                if(i == 0) {
+                    dialogIntetface.dismiss()
+
+//                    itemList.sortBy{it.title}
+                    // refresh adapter after sort
+                    adapter.notifyDataSetChanged()
+                } else if(i == 1) {
+                    dialogIntetface.dismiss()
+
+//                    itemList.sortByDescending {it.title}
+                    // refresh adapter after sort
+                    adapter.notifyDataSetChanged()
+                }
+            }.show()
+    }
+
 
     fun setFAB() {
         addFAB = findViewById(R.id.FABAdd);
@@ -253,11 +299,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         imageToPdfFAB.setOnClickListener {
-            Toast.makeText(this@MainActivity, "Image to PDF", Toast.LENGTH_LONG).show()
+            Toast.makeText(this@MainActivity, getString(R.string.image_to_pdf), Toast.LENGTH_LONG).show()
         }
 
         scanFAB.setOnClickListener {
-            Toast.makeText(this@MainActivity, "Scan document", Toast.LENGTH_LONG).show()
+            Toast.makeText(this@MainActivity, getString(R.string.scan_document), Toast.LENGTH_LONG).show()
         }
     }
 
