@@ -1,0 +1,44 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <string name="app_name">PDF Reader</string>
+    <string name="first_fragment_label" translatable="false">First Fragment</string>
+    <string name="second_fragment_label" translatable="false">Second Fragment</string>
+
+
+    // toolbar
+    <string name="toolbar_search">Search</string>
+    <string name="toolbar_language">Language</string>
+    <string name="toolbar_premium">Get Premium</string>
+    <string name="toolbar_setting">Setting</string>
+    <string name="toolbar_name">Name</string>
+    <string name="toolbar_edit">Edit</string>
+    <string name="toolbar_size">Size</string>
+
+    <string name="language_en" translatable="false">English</string>
+    <string name="language_vi" translatable="false">Vietnamese</string>
+    <string name="language_code_en" translatable="false">en</string>
+    <string name="language_code_vi" translatable="false">vi</string>
+
+    // float add
+    <string name="float_add_image">Image</string>
+    <string name="float_add_scan_document">Scan document</string>
+
+    // bottom tab
+    <string name="document" translatable="true">Document</string>
+    <string name="recently" translatable="true">Recently</string>
+    <string name="favorite" translatable="true">Favorite</string>
+
+    // show language
+    <string-array name="language_names">
+        <item>@string/language_en</item>
+        <item>@string/language_vi</item>
+    </string-array>
+
+    // list language code
+    <string-array name="language_codes">
+        <item>@string/language_code_en</item>
+        <item>@string/language_code_vi</item>
+    </string-array>
+
+</resources>

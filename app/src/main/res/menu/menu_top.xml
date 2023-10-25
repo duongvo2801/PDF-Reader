@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="@string/toolbar_premium"
+        android:id="@+id/get_premium"
+        android:icon="@drawable/ic_baseline_upgrade_24"
+        app:showAsAction="always">
+
+    </item>
+    <item
+        android:title="@string/toolbar_language"
+        android:id="@+id/change_language"
+        android:icon="@drawable/ic_baseline_translate_24"
+        app:showAsAction="always">
+
+    </item>
+
+    <item
+        android:title="@string/toolbar_search"
+        android:id="@+id/search"
+        android:icon="@drawable/ic_baseline_search_24"
+        app:showAsAction="always">
+
+    </item>
+
+    <item
+        android:title="@string/toolbar_setting"
+        android:id="@+id/sort"
+        android:icon="@drawable/ic_baseline_settings_24"
+        app:showAsAction="always">
+        <menu>
+            <item app:showAsAction="never"
+                android:title="@string/toolbar_name"
+                android:id="@+id/sort_by_name">
+
+            </item>
+
+            <item app:showAsAction="never"
+                android:title="@string/toolbar_edit"
+                android:id="@+id/sort_by_change">
+
+            </item>
+            <item app:showAsAction="never"
+                android:title="@string/toolbar_size"
+                android:id="@+id/sort_by_size">
+
+            </item>
+        </menu>
+
+    </item>
+
+</menu>

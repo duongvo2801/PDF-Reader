@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PDFReader</string>
+    <string name="toolbar_premium">Lấy tiền thưởng</string>
+    <string name="toolbar_setting">Cài đặt</string>
+    <string name="toolbar_name">Tên</string>
+    <string name="toolbar_edit">Chỉnh sửa</string>
+    <string name="app_name_changuage">Đa ngôn ngữ thụ động</string>
+    <string name="content">Đây là ứng dụng đa ngôn ngữ</string>
+    <string name="news">Google đang bổ sung Kotlin làm ngôn ngữ lập trình chính thức để phát triển Android</string>
+    <string name="toolbar_language">Ngôn ngữ</string>
+    <string name="document">Tài liệu</string>
+    <string name="recently">Gần đây</string>
+    <string name="favorite">Yêu thích</string>
+    <string name="toolbar_search">Tìm kiếm</string>
+    <string name="float_add_image">Hình ảnh</string>
+    <string name="float_add_scan_document">Quét hình ảnh</string>
+    <string name="toolbar_size">Kích thước</string>
+</resources>
