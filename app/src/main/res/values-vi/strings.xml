@@ -22,4 +22,11 @@
     <string name="scan_document">Quét tài liệu</string>
     <string name="dialog_title">Sắp xếp</string>
     <string name="toolbar_coming_soon">Sắp ra mắt</string>
+    <string name="permissions_granted">Quyền được cấp</string>
+    <string name="convert_button_camera">Máy ảnh</string>
+    <string name="convert_button_upload">Tải lên</string>
+    <string name="convert_to_pdf">Chuyển đổi sang PDF</string>
+    <string name="toolbar_convert">Chuyển đổi</string>
+    <string name="gallery">Thư viện</string>
+    <string name="camera">Máy ảnh</string>
 </resources>

@@ -48,7 +48,10 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+
+    // run Time permission library
     implementation("com.karumi:dexter:6.2.3")
+
     implementation("com.github.barteksc:android-pdf-viewer:3.2.0-beta.1")
 
     implementation("android.arch.persistence.room:runtime:1.0.0")
@@ -56,6 +59,8 @@ dependencies {
 
 
     implementation("com.intuit.sdp:sdp-android:1.1.0")
+    // image to pdf convert
+//    implementation 'com.github.kerolsafififawzy:Image-To-PdfConverter:1.0.3'
 
     // Language
     //noinspection GradleCompatible

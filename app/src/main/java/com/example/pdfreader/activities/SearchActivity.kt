@@ -75,7 +75,7 @@ class SearchActivity : AppCompatActivity() {
         })
     }
 
-    fun goBackHome() {
+    private fun goBackHome() {
         val buttonBack = findViewById<ImageView>(R.id.ivHomeBack)
         buttonBack.setOnClickListener {
            onBackPressed()

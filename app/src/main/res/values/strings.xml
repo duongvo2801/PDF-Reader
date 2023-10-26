@@ -15,12 +15,12 @@
     <string name="toolbar_edit">Edit</string>
     <string name="toolbar_size">Size</string>
 
-    <string name="language_en" >English</string>
-    <string name="language_vi" >Vietnamese</string>
+    <string name="language_en">English</string>
+    <string name="language_vi">Vietnamese</string>
 
     // string array sort
-    <string name="sort_asc" >Ascending</string>
-    <string name="sort_desc" >Descending</string>
+    <string name="sort_asc">Ascending</string>
+    <string name="sort_desc">Descending</string>
 
     // float add
     <string name="float_add_image">Image</string>
@@ -34,6 +34,13 @@
     <string name="scan_document">Scan document</string>
     <string name="dialog_title">Sort</string>
     <string name="toolbar_coming_soon">Coming soon</string>
+    <string name="permissions_granted">Permissions Granted</string>
+    <string name="convert_button_camera">Camera</string>
+    <string name="convert_button_upload">Upload</string>
+    <string name="convert_to_pdf">Convert to PDF</string>
+    <string name="toolbar_convert">Convert</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
 
 
 </resources>

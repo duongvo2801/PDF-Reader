@@ -2,22 +2,20 @@ package com.example.pdfreader
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.example.pdfreader.activities.ChangeLanguageActivity
+import com.example.pdfreader.activities.ConvertPdfActivity
 import com.example.pdfreader.activities.SearchActivity
-import com.example.pdfreader.adapters.FileAdapter
 import com.example.pdfreader.adapters.ViewPagerAdapter
 import com.example.pdfreader.data.Libs
 import com.example.pdfreader.databinding.ActivityMainBinding
@@ -36,7 +34,6 @@ import com.karumi.dexter.listener.single.PermissionListener
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: FileAdapter
 
     lateinit var addFAB: FloatingActionButton
     lateinit var imageToPdfFAB: FloatingActionButton
@@ -94,8 +91,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        val toolBar = findViewById<Toolbar>(R.id.myToolBar)
-        setSupportActionBar(toolBar)
+        val toolBar = findViewById<LinearLayout>(R.id.toolbar)
+        clickToolbar()
+
         checkPermission()
         setFAB()
 
@@ -105,8 +103,8 @@ class MainActivity : AppCompatActivity() {
         binding.tabLayoutView.addTab(binding.tabLayoutView.newTab().setText("EXCEL"))
         binding.tabLayoutView.addTab(binding.tabLayoutView.newTab().setText("PPT"))
 
-        toolBar.setBackgroundColor(Color.RED)
-        binding.tabLayoutView.setBackgroundColor(Color.RED)
+        toolBar.setBackgroundColor(Color.parseColor("#b30b00"))
+        binding.tabLayoutView.setBackgroundColor(Color.parseColor("#b30b00"))
         window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.pdf)
 
         binding.viewpage.apply {
@@ -143,8 +141,9 @@ class MainActivity : AppCompatActivity() {
 
                         }
                         else -> {
-                            toolBar.setBackgroundColor(Color.RED)
-                            binding.tabLayoutView.setBackgroundColor(Color.RED)
+                            toolBar.setBackgroundColor(Color.parseColor("#b30b00"))
+                            binding.tabLayoutView.setBackgroundColor(Color.parseColor("#b30b00"))
+                            window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.pdf)
                         }
 
                     }
@@ -215,61 +214,94 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
             }
-//            navigationmenu.getMenu().clear();
-//            myBottomNavigation.inflateMenu(R.menu.menu_bottom_navigation);
         }
 
-
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater : MenuInflater = menuInflater
-        inflater.inflate(R.menu.menu_top, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            R.id.sort -> {
-                softDialog()
-            }
-            R.id.search -> {
-                startActivity(Intent(this, SearchActivity::class.java))
-            }
-            R.id.change_language -> {
-                intent = Intent(this, ChangeLanguageActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.get_premium -> {
-                Toast.makeText(this, getString(R.string.toolbar_coming_soon), Toast.LENGTH_SHORT).show()
-
-            }
+        imageToPdfFAB.setOnClickListener {
+            startActivity(Intent(this, ConvertPdfActivity::class.java))
         }
-
-        return super.onOptionsItemSelected(item)
+        scanFAB.setOnClickListener {
+            startActivity(Intent(this, ConvertPdfActivity::class.java))
+        }
     }
 
-    private fun softDialog() {
-        var options = arrayOf(getString(R.string.sort_asc), getString(R.string.sort_desc))
-        val dialog = AlertDialog.Builder(this)
-        dialog.setTitle(getString(R.string.dialog_title))
-            .setItems(options){
-                dialogIntetface, i ->
-                if(i == 0) {
-                    dialogIntetface.dismiss()
+    private fun clickToolbar() {
+        val getPremium = findViewById<ImageView>(R.id.get_premium)
+        val changeLanguage = findViewById<ImageView>(R.id.change_language)
+        val search = findViewById<ImageView>(R.id.search)
+        val sort = findViewById<ImageView>(R.id.sort)
 
-//                    itemList.sortBy{it.title}
-                    // refresh adapter after sort
-                    adapter.notifyDataSetChanged()
-                } else if(i == 1) {
-                    dialogIntetface.dismiss()
-
-//                    itemList.sortByDescending {it.title}
-                    // refresh adapter after sort
-                    adapter.notifyDataSetChanged()
+        getPremium.setOnClickListener {
+            Toast.makeText(this, getString(R.string.toolbar_coming_soon), Toast.LENGTH_SHORT).show()
+        }
+        changeLanguage.setOnClickListener {
+            startActivity(Intent(this, ChangeLanguageActivity::class.java))
+        }
+        search.setOnClickListener {
+            startActivity(Intent(this, SearchActivity::class.java))
+        }
+        sort.setOnClickListener {
+            val popupMenu: PopupMenu = PopupMenu(this, sort)
+            popupMenu.menuInflater.inflate(R.menu.popup_toolbar, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.sort_asc ->
+                        Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
+                    R.id.sort_desc ->
+                        Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
                 }
-            }.show()
+                true
+            })
+            popupMenu.show()
+        }
     }
+
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        val inflater : MenuInflater = menuInflater
+//        inflater.inflate(R.menu.menu_top, menu)
+//        return true
+//    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when(item.itemId) {
+//            R.id.sort -> {
+//                softDialog()
+//            }
+//            R.id.search -> {
+//                startActivity(Intent(this, SearchActivity::class.java))
+//            }
+//            R.id.change_language -> {
+//                intent = Intent(this, ChangeLanguageActivity::class.java)
+//                startActivity(intent)
+//            }
+//            R.id.get_premium -> {
+//                Toast.makeText(this, getString(R.string.toolbar_coming_soon), Toast.LENGTH_SHORT).show()
+//
+//            }
+//        }
+//
+//        return super.onOptionsItemSelected(item)
+//    }
+
+//    private fun softDialog() {
+//        var options = arrayOf(getString(R.string.sort_asc), getString(R.string.sort_desc))
+//        val dialog = AlertDialog.Builder(this)
+//        dialog.setTitle(getString(R.string.dialog_title))
+//            .setItems(options){
+//                dialogIntetface, i ->
+//                if(i == 0) {
+//                    dialogIntetface.dismiss()
+//
+////                    itemList.sortBy{it.title}
+//                    // refresh adapter after sort
+//                    adapter.notifyDataSetChanged()
+//                } else if(i == 1) {
+//                    dialogIntetface.dismiss()
+//
+////                    itemList.sortByDescending {it.title}
+//                    // refresh adapter after sort
+//                    adapter.notifyDataSetChanged()
+//                }
+//            }.show()
+//    }
 
 
     fun setFAB() {

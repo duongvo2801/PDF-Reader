@@ -3,7 +3,7 @@
     <style name="Base.Theme.PDFReader" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="android:statusBarColor">#C20F1E</item>
+        <item name="android:statusBarColor">@color/pdf</item>
     </style>
 
     <style name="Theme.PDFReader" parent="Base.Theme.PDFReader" />

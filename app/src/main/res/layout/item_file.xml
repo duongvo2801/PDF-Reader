@@ -66,9 +66,10 @@
             android:layout_height="30dp" />
 
         <ImageButton
+            android:id="@+id/moreFile"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/baseline_more_vert_24"
+            android:background="@drawable/baseline_more_24"
             android:layout_gravity="center"
             android:layout_width="30dp"
             android:layout_height="30dp" />

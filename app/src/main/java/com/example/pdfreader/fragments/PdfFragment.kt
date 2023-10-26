@@ -1,9 +1,11 @@
 package com.example.pdfreader.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pdfreader.adapters.FileAdapter
@@ -30,6 +32,7 @@ class PdfFragment : Fragment(){
 
         // Now you can safely access views using binding
         loadAllFilePDF()
+
     }
 
 
@@ -40,6 +43,8 @@ class PdfFragment : Fragment(){
 
         val adapter = FileAdapter(fileHelper.getAllFilesbyExtension("pdf"), requireContext())
         binding.rcyPdfFile.adapter = adapter
+
+        Log.d("qqq", binding.rcyPdfFile.size.toString())
     }
 
 
@@ -59,7 +64,6 @@ class PdfFragment : Fragment(){
         binding.rcyPdfFile.adapter = adapter
 
     }
-
 
 
 }

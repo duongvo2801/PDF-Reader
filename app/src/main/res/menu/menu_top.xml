@@ -6,32 +6,23 @@
         android:title="@string/toolbar_premium"
         android:id="@+id/get_premium"
         android:icon="@drawable/ic_baseline_upgrade_24"
-        app:showAsAction="always">
-
-    </item>
+        app:showAsAction="always" />
     <item
         android:title="@string/toolbar_language"
         android:id="@+id/change_language"
         android:icon="@drawable/ic_baseline_translate_24"
-        app:showAsAction="always">
-
-    </item>
+        app:showAsAction="always" />
 
     <item
         android:title="@string/toolbar_search"
         android:id="@+id/search"
         android:icon="@drawable/ic_baseline_search_24"
-        app:showAsAction="always">
-
-    </item>
+        app:showAsAction="always" />
 
     <item
         android:title="@string/toolbar_sort"
         android:id="@+id/sort"
         android:icon="@drawable/baseline_sort_24"
-        app:showAsAction="always">
-
-
-    </item>
+        app:showAsAction="always" />
 
 </menu>
