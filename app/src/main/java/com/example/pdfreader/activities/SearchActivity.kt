@@ -2,6 +2,7 @@ package com.example.pdfreader.activities
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -39,12 +40,14 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun loadAllFilePDF() {
-        rcyFile.adapter = null
+//        rcyFile.adapter = null
         rcyFile.layoutManager = LinearLayoutManager(this)
         val fileHelper = loadFileFromDevice(this)
 
         val adapter = FileAdapter(fileHelper.getAllFilesbyExtension("pdf"), this)
         rcyFile.adapter = adapter
+
+        Log.d("qqq", adapter.itemCount.toString())
 
     }
 
@@ -64,7 +67,8 @@ class SearchActivity : AppCompatActivity() {
                         }
                     }
                     if(filteredList.isEmpty()) {
-                        Toast.makeText(applicationContext, "No data found", Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext,
+                            getString(R.string.data_found), Toast.LENGTH_LONG).show()
                     } else {
                         adapter.setFilteredList(filteredList)
                     }

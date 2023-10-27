@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.pdfreader.activities.ChangeLanguageActivity
 import com.example.pdfreader.activities.ConvertPdfActivity
+import com.example.pdfreader.activities.PremiumActivity
 import com.example.pdfreader.activities.SearchActivity
 import com.example.pdfreader.adapters.ViewPagerAdapter
 import com.example.pdfreader.data.Libs
@@ -231,7 +232,7 @@ class MainActivity : AppCompatActivity() {
         val sort = findViewById<ImageView>(R.id.sort)
 
         getPremium.setOnClickListener {
-            Toast.makeText(this, getString(R.string.toolbar_coming_soon), Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, PremiumActivity::class.java))
         }
         changeLanguage.setOnClickListener {
             startActivity(Intent(this, ChangeLanguageActivity::class.java))
@@ -244,9 +245,11 @@ class MainActivity : AppCompatActivity() {
             popupMenu.menuInflater.inflate(R.menu.popup_toolbar, popupMenu.menu)
             popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
                 when (item.itemId) {
-                    R.id.sort_asc ->
+                    R.id.toolbarName ->
                         Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
-                    R.id.sort_desc ->
+                    R.id.toolbarEdit ->
+                        Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
+                    R.id.toolbarSize ->
                         Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
                 }
                 true

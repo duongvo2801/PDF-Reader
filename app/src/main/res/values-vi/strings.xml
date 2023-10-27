@@ -16,8 +16,6 @@
     <string name="float_add_image">Hình ảnh</string>
     <string name="float_add_scan_document">Quét hình ảnh</string>
     <string name="toolbar_size">Kích thước</string>
-    <string name="sort_asc">Tăng dần</string>
-    <string name="sort_desc">Giảm dần</string>
     <string name="image_to_pdf">Hình ảnh sang PDF</string>
     <string name="scan_document">Quét tài liệu</string>
     <string name="dialog_title">Sắp xếp</string>
@@ -29,4 +27,12 @@
     <string name="toolbar_convert">Chuyển đổi</string>
     <string name="gallery">Thư viện</string>
     <string name="camera">Máy ảnh</string>
+    <string name="go_to_pdf_premium">Chuyển đên PDF Premium</string>
+    <string name="no_ads">Không có quảng cáo</string>
+    <string name="all_read_document">Tất cả trình đọc tài liệu</string>
+    <string name="convert_image_to_pdf">Chuyển đổi Ảnh thành PDF</string>
+    <string name="data_found">Không tìm thấy</string>
+    <string name="monthly">Hàng tháng</string>
+    <string name="annual">Hàng năm</string>
+    <string name="confirm">Xác nhận</string>
 </resources>

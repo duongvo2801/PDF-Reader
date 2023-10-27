@@ -18,6 +18,9 @@
         android:theme="@style/Theme.PDFReader"
         tools:targetApi="31">
         <activity
+            android:name=".activities.PremiumActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ConvertPdfActivity"
             android:exported="false" />
         <activity
@@ -31,7 +34,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.SplashActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

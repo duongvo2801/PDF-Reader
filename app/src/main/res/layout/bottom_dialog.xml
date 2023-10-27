@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
+        android:background="@color/yellow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/download"
-        android:background="@color/yellow"
         android:padding="8dp">
 
         <ImageView
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/shareLinearLayout"
-        android:background="@color/yellow"
+        android:background="?android:attr/selectableItemBackground"
         android:padding="8dp">
 
         <ImageView
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/uploadLinearLayout"
-        android:background="@color/yellow"
+        android:background="?android:attr/selectableItemBackground"
         android:padding="8dp">
 
         <ImageView
@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/copyLinearLayout"
-        android:background="@color/yellow"
+        android:background="?android:attr/selectableItemBackground"
         android:padding="8dp">
 
         <ImageView
@@ -95,7 +95,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/delete"
-        android:background="@color/yellow"
+        android:background="?android:attr/selectableItemBackground"
         android:padding="8dp">
 
         <ImageView

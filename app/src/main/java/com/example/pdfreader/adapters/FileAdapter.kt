@@ -3,6 +3,7 @@ package com.example.pdfreader.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import com.example.pdfreader.R
 import com.example.pdfreader.activities.DocumentReaderActivity
 import com.example.pdfreader.databinding.ItemFileBinding
 import com.example.pdfreader.entities.FileItem
+import com.example.pdfreader.fragments.PdfFragment
 import com.example.pdfreader.sqlite.FileDBSQLite
 import com.example.pdfreader.sqlite.FileModel
 
@@ -33,7 +35,8 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context : Co
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val pdfFile = allFiles[position]
         val dbHelper = FileDBSQLite(context)
-        holder.bind(pdfFile,dbHelper)
+        val pdf = PdfFragment()
+        holder.bind(pdfFile,dbHelper, pdf)
         holder.itemView.setOnClickListener {
             val intent = Intent(context, DocumentReaderActivity::class.java)
             intent.putExtra("path", pdfFile.path)
@@ -50,7 +53,7 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context : Co
 
         private val binding = ItemFileBinding.bind(itemView)
 
-        fun bind(fileItem: FileItem, dbHelper: FileDBSQLite) {
+        fun bind(fileItem: FileItem, dbHelper: FileDBSQLite, pdf: PdfFragment) {
 
             binding.tvNameFile.text = fileItem.name
             binding.dateFile.text = fileItem.datefile
@@ -92,9 +95,16 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context : Co
                 }
 
             }
-
-            // Set click listeners or other operations if needed
+            binding.moreFile.setOnClickListener {
+                if(pdf.isAdded) {
+                    pdf.showBottomSheetDialog()
+                    Log.d("qqq", pdf.toString())
+                }
+            }
         }
+
 
     }
 }
+
+

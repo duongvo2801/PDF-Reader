@@ -2,15 +2,21 @@ package com.example.pdfreader.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -32,8 +38,15 @@ class ConvertPdfActivity : AppCompatActivity() {
     private lateinit var buttonConvertPdf: Button
     private lateinit var progressBar: ProgressBar
 
+    private lateinit var mContext: Context
+
+    // Uri of the image picked
+    private var imageUri: Uri ?= null
+
+
     var folderPath: String = Environment.getDataDirectory().absolutePath + "/storage/emulated/0/pdf-reader"
     val directory = File("/sdcard/pdf-reader/")
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,10 +57,12 @@ class ConvertPdfActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressConvert)
 
         getPermission()
+        mContext = this
 
         goBackHome()
         clickToolbar()
     }
+
 
 
     private fun getPermission() {
@@ -93,6 +108,38 @@ class ConvertPdfActivity : AppCompatActivity() {
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             result -> dexter.check()
+    }
+
+    private fun pickImageGallery() {
+        Log.d("ddd", "pickImageGallery")
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+
+        galleryActivityResult
+    }
+
+    private val galleryActivityResult = registerForActivityResult<Intent, ActivityResult> (
+        ActivityResultContracts.StartActivityForResult()
+    ) {result ->
+        if(result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            imageUri = data!!.data
+            Log.d("ddd", "Gallery Image: $imageUri")
+        } else {
+            Log.d("ddd", "Cancelled")
+            Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
+        }
+
+    }
+
+    private fun pickImageCamera() {
+        Log.d("ddd", "pickImageCamera")
+
+        val contenValue = ContentValues()
+        contenValue.put(MediaStore.Images.Media.TITLE, "TEMP IMAGE TITLE")
+        contenValue.put(MediaStore.Images.Media.DESCRIPTION, "TEMP IMAGE DESCRIPTION")
+
+//        imageUri.c
     }
 
     private fun createFolder() {

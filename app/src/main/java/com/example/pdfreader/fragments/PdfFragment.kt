@@ -1,28 +1,35 @@
 package com.example.pdfreader.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.size
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.pdfreader.R
 import com.example.pdfreader.adapters.FileAdapter
 import com.example.pdfreader.databinding.FragmentPdfBinding
+import com.example.pdfreader.databinding.ItemFileBinding
 import com.example.pdfreader.entities.FileItem
 import com.example.pdfreader.sqlite.FileDBSQLite
 import com.example.pdfreader.utils.loadFileFromDevice
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
 class PdfFragment : Fragment(){
 
     private lateinit var binding: FragmentPdfBinding
+    private lateinit var item: ItemFileBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPdfBinding.inflate(inflater, container, false)
+        item = ItemFileBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -33,7 +40,39 @@ class PdfFragment : Fragment(){
         // Now you can safely access views using binding
         loadAllFilePDF()
 
+
     }
+
+    @SuppressLint("MissingInflatedId")
+    fun showBottomSheetDialog() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext()).apply {
+            setContentView(R.layout.bottom_dialog)
+
+            findViewById<LinearLayout>(R.id.copyLinearLayout)?.setOnClickListener {
+                Toast.makeText(context, "Copy is Clicked ", Toast.LENGTH_LONG).show();
+                dismiss()
+            }
+
+            findViewById<LinearLayout>(R.id.shareLinearLayout)?.setOnClickListener {
+                // Handle share action
+            }
+
+            findViewById<LinearLayout>(R.id.uploadLinearLayout)?.setOnClickListener {
+                // Handle upload action
+            }
+
+            findViewById<LinearLayout>(R.id.download)?.setOnClickListener {
+                // Handle download action
+            }
+
+            findViewById<LinearLayout>(R.id.delete)?.setOnClickListener {
+                // Handle delete action
+            }
+        }
+
+        bottomSheetDialog.show()
+    }
+
 
 
     fun loadAllFilePDF() {
@@ -44,11 +83,8 @@ class PdfFragment : Fragment(){
         val adapter = FileAdapter(fileHelper.getAllFilesbyExtension("pdf"), requireContext())
         binding.rcyPdfFile.adapter = adapter
 
-        Log.d("qqq", binding.rcyPdfFile.size.toString())
     }
 
-
-    // get data recycleview 1 fill to recycleview 2
     fun loadFavoriteFilePdf() {
         binding.rcyPdfFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
