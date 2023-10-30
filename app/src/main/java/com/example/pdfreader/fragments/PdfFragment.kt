@@ -1,28 +1,27 @@
 package com.example.pdfreader.fragments
 
-import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.pdfreader.R
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pdfreader.adapters.FileAdapter
 import com.example.pdfreader.databinding.FragmentPdfBinding
 import com.example.pdfreader.databinding.ItemFileBinding
 import com.example.pdfreader.entities.FileItem
 import com.example.pdfreader.sqlite.FileDBSQLite
 import com.example.pdfreader.utils.loadFileFromDevice
-import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
 class PdfFragment : Fragment(){
 
     private lateinit var binding: FragmentPdfBinding
     private lateinit var item: ItemFileBinding
+    private lateinit var adapter: FileAdapter
+    private lateinit var recycler: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,48 +30,27 @@ class PdfFragment : Fragment(){
         binding = FragmentPdfBinding.inflate(inflater, container, false)
         item = ItemFileBinding.inflate(inflater, container, false)
 
+        adapter = FileAdapter(ArrayList(), requireContext())
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Now you can safely access views using binding
+//        binding.rcyPdfFile = view.findViewById(R.id.rcy_pdf_file)
+
         loadAllFilePDF()
 
+        val newFiles = listOf<FileItem>()
+        adapter.updateFileList(newFiles)
 
     }
 
-    @SuppressLint("MissingInflatedId")
-    fun showBottomSheetDialog() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext()).apply {
-            setContentView(R.layout.bottom_dialog)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
 
-            findViewById<LinearLayout>(R.id.copyLinearLayout)?.setOnClickListener {
-                Toast.makeText(context, "Copy is Clicked ", Toast.LENGTH_LONG).show();
-                dismiss()
-            }
-
-            findViewById<LinearLayout>(R.id.shareLinearLayout)?.setOnClickListener {
-                // Handle share action
-            }
-
-            findViewById<LinearLayout>(R.id.uploadLinearLayout)?.setOnClickListener {
-                // Handle upload action
-            }
-
-            findViewById<LinearLayout>(R.id.download)?.setOnClickListener {
-                // Handle download action
-            }
-
-            findViewById<LinearLayout>(R.id.delete)?.setOnClickListener {
-                // Handle delete action
-            }
-        }
-
-        bottomSheetDialog.show()
     }
-
 
 
     fun loadAllFilePDF() {

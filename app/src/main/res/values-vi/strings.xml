@@ -35,4 +35,11 @@
     <string name="monthly">Hàng tháng</string>
     <string name="annual">Hàng năm</string>
     <string name="confirm">Xác nhận</string>
+    <string name="action_file_send_email">Email</string>
+    <string name="action_file_copy">Sao chép đến</string>
+    <string name="action_file_rename">Đổi tên</string>
+    <string name="action_file_delete">Xóa</string>
+    <string name="change_name_pdf">Đổi tên PDF</string>
+    <string name="enter_pdf_name">Nhập tên PDF</string>
+    <string name="double_click_to_exit">Nhấn 1 lần nữa để thoát</string>
 </resources>

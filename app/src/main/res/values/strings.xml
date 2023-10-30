@@ -46,6 +46,13 @@
     <string name="monthly">Monthly</string>
     <string name="annual">Annual</string>
     <string name="confirm">Confirm</string>
+    <string name="action_file_send_email">Email</string>
+    <string name="action_file_copy">Copy to</string>
+    <string name="action_file_rename">Rename</string>
+    <string name="action_file_delete">Delete</string>
+    <string name="change_name_pdf">Rename PDF</string>
+    <string name="enter_pdf_name">Enter PDF Name</string>
+    <string name="double_click_to_exit">Press once again to exit!</string>
 
 
 </resources>

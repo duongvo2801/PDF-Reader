@@ -35,6 +35,7 @@ import com.karumi.dexter.listener.single.PermissionListener
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private var doubleClickToExit: Long = 0
 
     lateinit var addFAB: FloatingActionButton
     lateinit var imageToPdfFAB: FloatingActionButton
@@ -258,55 +259,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        val inflater : MenuInflater = menuInflater
-//        inflater.inflate(R.menu.menu_top, menu)
-//        return true
-//    }
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when(item.itemId) {
-//            R.id.sort -> {
-//                softDialog()
-//            }
-//            R.id.search -> {
-//                startActivity(Intent(this, SearchActivity::class.java))
-//            }
-//            R.id.change_language -> {
-//                intent = Intent(this, ChangeLanguageActivity::class.java)
-//                startActivity(intent)
-//            }
-//            R.id.get_premium -> {
-//                Toast.makeText(this, getString(R.string.toolbar_coming_soon), Toast.LENGTH_SHORT).show()
-//
-//            }
-//        }
-//
-//        return super.onOptionsItemSelected(item)
-//    }
-
-//    private fun softDialog() {
-//        var options = arrayOf(getString(R.string.sort_asc), getString(R.string.sort_desc))
-//        val dialog = AlertDialog.Builder(this)
-//        dialog.setTitle(getString(R.string.dialog_title))
-//            .setItems(options){
-//                dialogIntetface, i ->
-//                if(i == 0) {
-//                    dialogIntetface.dismiss()
-//
-////                    itemList.sortBy{it.title}
-//                    // refresh adapter after sort
-//                    adapter.notifyDataSetChanged()
-//                } else if(i == 1) {
-//                    dialogIntetface.dismiss()
-//
-////                    itemList.sortByDescending {it.title}
-//                    // refresh adapter after sort
-//                    adapter.notifyDataSetChanged()
-//                }
-//            }.show()
-//    }
-
-
     fun setFAB() {
         addFAB = findViewById(R.id.FABAdd);
         imageToPdfFAB = findViewById(R.id.FABImageToPdf);
@@ -342,4 +294,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if (doubleClickToExit + 1500 > System.currentTimeMillis())  {
+            super.onBackPressed()
+        } else {
+            Toast.makeText(getBaseContext(),
+                getString(R.string.double_click_to_exit), Toast.LENGTH_SHORT).show();
+        }
+        doubleClickToExit = System.currentTimeMillis()
+    }
 }

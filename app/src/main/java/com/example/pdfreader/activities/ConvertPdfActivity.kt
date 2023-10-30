@@ -64,7 +64,6 @@ class ConvertPdfActivity : AppCompatActivity() {
     }
 
 
-
     private fun getPermission() {
         dexter = Dexter.withContext(this)
             .withPermissions(

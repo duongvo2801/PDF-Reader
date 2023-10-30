@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_send_email"
+        android:title="@string/action_file_send_email"
+        android:icon="@drawable/baseline_send_24" />
+    <item
+        android:id="@+id/action_copy"
+        android:title="@string/action_file_copy"
+        android:icon="@drawable/baseline_content_copy_24" />
+    <item
+        android:id="@+id/action_rename"
+        android:title="@string/action_file_rename"
+        android:icon="@drawable/baseline_edit_24" />
+    <item
+        android:id="@+id/action_delete"
+        android:title="@string/action_file_delete"
+        android:icon="@drawable/baseline_delete_24" />
+</menu>

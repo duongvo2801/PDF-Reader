@@ -22,7 +22,6 @@ class ChangeLanguageActivity : AppCompatActivity() {
         goBackHome()
         window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.pdf)
 
-
     }
 
     fun change(view: View) {
