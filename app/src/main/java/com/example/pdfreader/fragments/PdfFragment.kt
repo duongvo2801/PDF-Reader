@@ -13,7 +13,7 @@ import com.example.pdfreader.databinding.FragmentPdfBinding
 import com.example.pdfreader.databinding.ItemFileBinding
 import com.example.pdfreader.entities.FileItem
 import com.example.pdfreader.sqlite.FileDBSQLite
-import com.example.pdfreader.utils.loadFileFromDevice
+import com.example.pdfreader.utils.LoadFileFromDevice
 
 
 class PdfFragment : Fragment(){
@@ -56,7 +56,7 @@ class PdfFragment : Fragment(){
     fun loadAllFilePDF() {
         binding.rcyPdfFile.adapter = null
         binding.rcyPdfFile.layoutManager = LinearLayoutManager(context)
-        val fileHelper = loadFileFromDevice(requireContext())
+        val fileHelper = LoadFileFromDevice(requireContext())
 
         val adapter = FileAdapter(fileHelper.getAllFilesbyExtension("pdf"), requireContext())
         binding.rcyPdfFile.adapter = adapter

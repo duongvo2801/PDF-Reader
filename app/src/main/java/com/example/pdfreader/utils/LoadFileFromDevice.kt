@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class loadFileFromDevice (private val context: Context){
+class LoadFileFromDevice (private val context: Context){
     fun getAllFilesbyExtension(ext : String): List<FileItem> {
         val pdfFiles: MutableList<FileItem> = ArrayList()
 

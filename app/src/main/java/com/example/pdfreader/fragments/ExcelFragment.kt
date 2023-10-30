@@ -10,7 +10,7 @@ import com.example.pdfreader.adapters.FileAdapter
 import com.example.pdfreader.databinding.FragmentExcelBinding
 import com.example.pdfreader.entities.FileItem
 import com.example.pdfreader.sqlite.FileDBSQLite
-import com.example.pdfreader.utils.loadFileFromDevice
+import com.example.pdfreader.utils.LoadFileFromDevice
 
 
 class ExcelFragment : Fragment() {
@@ -36,7 +36,7 @@ class ExcelFragment : Fragment() {
     fun loadAllFileExcel() {
         binding.rcyExcelFile.adapter = null
         binding.rcyExcelFile.layoutManager = LinearLayoutManager(context)
-        val fileHelper = loadFileFromDevice(requireContext())
+        val fileHelper = LoadFileFromDevice(requireContext())
 
         val adapter = FileAdapter(fileHelper.getAllFilesbyExtension("xlsx"), requireContext())
         binding.rcyExcelFile.adapter = adapter

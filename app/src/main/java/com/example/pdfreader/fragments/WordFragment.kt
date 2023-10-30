@@ -10,7 +10,7 @@ import com.example.pdfreader.adapters.FileAdapter
 import com.example.pdfreader.databinding.FragmentWordBinding
 import com.example.pdfreader.entities.FileItem
 import com.example.pdfreader.sqlite.FileDBSQLite
-import com.example.pdfreader.utils.loadFileFromDevice
+import com.example.pdfreader.utils.LoadFileFromDevice
 
 
 class WordFragment : Fragment() {
@@ -36,7 +36,7 @@ class WordFragment : Fragment() {
     fun loadAllFileWord() {
         binding.rcyWordFile.adapter = null
         binding.rcyWordFile.layoutManager = LinearLayoutManager(context)
-        val fileHelper = loadFileFromDevice(requireContext())
+        val fileHelper = LoadFileFromDevice(requireContext())
 
         val adapter = FileAdapter(fileHelper.getAllFilesbyExtension("docx"), requireContext())
         binding.rcyWordFile.adapter = adapter

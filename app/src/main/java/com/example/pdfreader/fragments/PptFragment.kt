@@ -10,7 +10,7 @@ import com.example.pdfreader.adapters.FileAdapter
 import com.example.pdfreader.databinding.FragmentPptBinding
 import com.example.pdfreader.entities.FileItem
 import com.example.pdfreader.sqlite.FileDBSQLite
-import com.example.pdfreader.utils.loadFileFromDevice
+import com.example.pdfreader.utils.LoadFileFromDevice
 
 
 class PptFragment : Fragment() {
@@ -36,7 +36,7 @@ class PptFragment : Fragment() {
     fun loadAllFilePPT() {
         binding.rcyPptFile.adapter = null
         binding.rcyPptFile.layoutManager = LinearLayoutManager(context)
-        val fileHelper = loadFileFromDevice(requireContext())
+        val fileHelper = LoadFileFromDevice(requireContext())
 
         val adapter = FileAdapter(fileHelper.getAllFilesbyExtension("pptx"), requireContext())
         binding.rcyPptFile.adapter = adapter
