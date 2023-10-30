@@ -2,7 +2,6 @@ package com.example.pdfreader.utils
 
 import android.content.Context
 import android.os.Environment
-import android.util.Log
 import com.example.pdfreader.entities.FileItem
 import java.io.File
 import java.text.DecimalFormat

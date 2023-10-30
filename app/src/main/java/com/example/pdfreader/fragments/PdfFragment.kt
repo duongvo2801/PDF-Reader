@@ -1,15 +1,16 @@
 package com.example.pdfreader.fragments
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pdfreader.adapters.FileAdapter
 import com.example.pdfreader.databinding.FragmentPdfBinding
+import com.example.pdfreader.databinding.ItemFileBinding
 import com.example.pdfreader.entities.FileItem
 import com.example.pdfreader.sqlite.FileDBSQLite
 import com.example.pdfreader.utils.loadFileFromDevice
@@ -18,11 +19,18 @@ import com.example.pdfreader.utils.loadFileFromDevice
 class PdfFragment : Fragment(){
 
     private lateinit var binding: FragmentPdfBinding
+    private lateinit var item: ItemFileBinding
+    private lateinit var adapter: FileAdapter
+    private lateinit var recycler: RecyclerView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPdfBinding.inflate(inflater, container, false)
+        item = ItemFileBinding.inflate(inflater, container, false)
+
+        adapter = FileAdapter(ArrayList(), requireContext())
 
         return binding.root
     }
@@ -30,8 +38,17 @@ class PdfFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Now you can safely access views using binding
+//        binding.rcyPdfFile = view.findViewById(R.id.rcy_pdf_file)
+
         loadAllFilePDF()
+
+        val newFiles = listOf<FileItem>()
+        adapter.updateFileList(newFiles)
+
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
 
     }
 
@@ -44,11 +61,8 @@ class PdfFragment : Fragment(){
         val adapter = FileAdapter(fileHelper.getAllFilesbyExtension("pdf"), requireContext())
         binding.rcyPdfFile.adapter = adapter
 
-        Log.d("qqq", binding.rcyPdfFile.size.toString())
     }
 
-
-    // get data recycleview 1 fill to recycleview 2
     fun loadFavoriteFilePdf() {
         binding.rcyPdfFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())

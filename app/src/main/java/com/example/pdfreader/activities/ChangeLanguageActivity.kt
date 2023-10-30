@@ -13,6 +13,7 @@ import com.example.pdfreader.data.Libs
 class ChangeLanguageActivity : AppCompatActivity() {
 
     private var lang = ""
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +21,6 @@ class ChangeLanguageActivity : AppCompatActivity() {
 
         goBackHome()
         window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.pdf)
-
 
     }
 
@@ -30,7 +30,6 @@ class ChangeLanguageActivity : AppCompatActivity() {
             R.id.radioEnglish -> "en"
             else -> ""
         }
-
 
         Libs.changeLang(lang, this)
         Log.e("LANG", lang)
