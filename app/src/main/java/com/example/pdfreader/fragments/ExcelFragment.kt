@@ -34,7 +34,7 @@ class ExcelFragment : Fragment() {
 
 
     fun loadAllFileExcel() {
-        binding.rcyExcelFile.adapter = null
+//        binding.rcyExcelFile.adapter = null
         binding.rcyExcelFile.layoutManager = LinearLayoutManager(context)
         val fileHelper = LoadFileFromDevice(requireContext())
 
@@ -44,7 +44,7 @@ class ExcelFragment : Fragment() {
 
 
     fun loadFavoriteFileExcel() {
-        binding.rcyExcelFile.adapter = null
+//        binding.rcyExcelFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
         val listFileFavorite = dbHelper.getAllFileFavorite()
         val pdfFiles: MutableList<FileItem> = ArrayList()

@@ -1,17 +1,17 @@
 package com.example.pdfreader.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.pdfreader.adapters.FileAdapter
 import com.example.pdfreader.databinding.FragmentPdfBinding
 import com.example.pdfreader.databinding.ItemFileBinding
 import com.example.pdfreader.entities.FileItem
+import com.example.pdfreader.entities.SortOrder
+import com.example.pdfreader.entities.SortType
 import com.example.pdfreader.sqlite.FileDBSQLite
 import com.example.pdfreader.utils.LoadFileFromDevice
 
@@ -21,7 +21,11 @@ class PdfFragment : Fragment(){
     private lateinit var binding: FragmentPdfBinding
     private lateinit var item: ItemFileBinding
     private lateinit var adapter: FileAdapter
-    private lateinit var recycler: RecyclerView
+
+    // sort file
+    private var currentSortOrder: SortOrder = SortOrder.ASCENDING
+    private var currentSortType: SortType = SortType.NAME
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,20 +45,46 @@ class PdfFragment : Fragment(){
 //        binding.rcyPdfFile = view.findViewById(R.id.rcy_pdf_file)
 
         loadAllFilePDF()
+        sortAndRefreshList()
 
         val newFiles = listOf<FileItem>()
         adapter.updateFileList(newFiles)
 
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+     fun sortAndRefreshList() {
+//        val fileHelper = LoadFileFromDevice(requireContext())
+//        val pdfFiles = fileHelper.getAllFilesbyExtension("pdf")
 
+//        when (currentSortType) {
+//            SortType.NAME -> {
+//                pdfFiles.sortWith(compareBy { it.name })
+//            }
+//            SortType.DATE -> {
+//                pdfFiles.sortWith(compareBy { it.date })
+//            }
+//            SortType.SIZE -> {
+//                pdfFiles.sortWith(compareBy { it.size })
+//            }
+//        }
+//
+//        if (currentSortOrder == SortOrder.DESCENDING) {
+//            pdfFiles.reverse()
+//        }
+//
+//        adapter.updateFileList(pdfFiles)
     }
 
 
+
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//
+//    }
+
+
     fun loadAllFilePDF() {
-        binding.rcyPdfFile.adapter = null
+//        binding.rcyPdfFile.adapter = null
         binding.rcyPdfFile.layoutManager = LinearLayoutManager(context)
         val fileHelper = LoadFileFromDevice(requireContext())
 

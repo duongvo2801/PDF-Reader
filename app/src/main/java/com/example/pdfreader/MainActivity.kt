@@ -246,8 +246,11 @@ class MainActivity : AppCompatActivity() {
             popupMenu.menuInflater.inflate(R.menu.popup_toolbar, popupMenu.menu)
             popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
                 when (item.itemId) {
-                    R.id.toolbarName ->
+                    R.id.toolbarName -> {
+//                        sortAndRefreshList
                         Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
+                    }
+
                     R.id.toolbarEdit ->
                         Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
                     R.id.toolbarSize ->

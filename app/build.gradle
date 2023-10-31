@@ -57,10 +57,9 @@ dependencies {
     implementation("android.arch.persistence.room:runtime:1.0.0")
     annotationProcessor("android.arch.persistence.room:compiler:1.0.0")
 
-
     implementation("com.intuit.sdp:sdp-android:1.1.0")
-    // image to pdf convert
-//    implementation 'com.github.kerolsafififawzy:Image-To-PdfConverter:1.0.3'
+
+    
 
     // Language
     //noinspection GradleCompatible
@@ -68,4 +67,10 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'com.android.support:recyclerview-v7:26.+'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
+
+    // Glide - Lib image
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+
+    implementation 'com.itextpdf:itext7-core:7.2.4'
+
 }

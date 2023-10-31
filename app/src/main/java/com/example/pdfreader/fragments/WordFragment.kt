@@ -34,7 +34,7 @@ class WordFragment : Fragment() {
     }
 
     fun loadAllFileWord() {
-        binding.rcyWordFile.adapter = null
+//        binding.rcyWordFile.adapter = null
         binding.rcyWordFile.layoutManager = LinearLayoutManager(context)
         val fileHelper = LoadFileFromDevice(requireContext())
 
@@ -43,7 +43,7 @@ class WordFragment : Fragment() {
     }
 
     fun loadFavoriteFileWord() {
-        binding.rcyWordFile.adapter = null
+//        binding.rcyWordFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
         val listFileFavorite = dbHelper.getAllFileFavorite()
         val pdfFiles: MutableList<FileItem> = ArrayList()

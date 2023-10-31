@@ -3,65 +3,83 @@ package com.example.pdfreader.activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentValues
-import android.content.Context
+import android.content.ClipData
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pdfreader.R
+import com.example.pdfreader.adapters.ImageAdapter
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.DexterBuilder
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import java.io.File
 
 class ConvertPdfActivity : AppCompatActivity() {
-    companion object{
-        private const val TAG = "IMAGE_LIST"
-    }
 
     lateinit var dexter : DexterBuilder
-    private lateinit var buttonConvertPdf: Button
-    private lateinit var progressBar: ProgressBar
+    private val images = ArrayList<String>()
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var imageAdapter: ImageAdapter
 
-    private lateinit var mContext: Context
+    companion object {
+        private const val PICK_IMAGES_REQUEST = 100
+    }
 
-    // Uri of the image picked
-    private var imageUri: Uri ?= null
-
-
-    var folderPath: String = Environment.getDataDirectory().absolutePath + "/storage/emulated/0/pdf-reader"
-    val directory = File("/sdcard/pdf-reader/")
-
-
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("MissingInflatedId", "WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_convert_pdf)
 
-        buttonConvertPdf = findViewById(R.id.buttonConvertPdf)
-        progressBar = findViewById(R.id.progressConvert)
+        //
+        recyclerView = findViewById(R.id.recyclerView)
+        val layoutManager = GridLayoutManager(this, 2)
+        recyclerView.layoutManager = layoutManager
+
+        imageAdapter = ImageAdapter(images)
+        recyclerView.adapter = imageAdapter
 
         getPermission()
-        mContext = this
-
         goBackHome()
-        clickToolbar()
+
+        val botton = findViewById<ImageView>(R.id.ivSelectImage)
+        botton.setOnClickListener {
+            val popupMenu: PopupMenu = PopupMenu(this, botton)
+            popupMenu.menuInflater.inflate(R.menu.popup_convert, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.gallery -> {
+                        pickImagesFromGallery()
+                        Toast.makeText(this@ConvertPdfActivity, "" + item.title, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    R.id.camera ->
+                        Toast.makeText(this@ConvertPdfActivity, "" + item.title, Toast.LENGTH_SHORT).show()
+                }
+                true
+            })
+            popupMenu.show()
+        }
+
+//        val buttonConvertPdf = findViewById<ImageView>(R.id.buttonConvertPdf)
+//        buttonConvertPdf.setOnClickListener {
+//            Toast.makeText(this@ConvertPdfActivity, "Click" , Toast.LENGTH_SHORT).show()
+//        }
+
+
     }
+
 
 
     private fun getPermission() {
@@ -75,7 +93,6 @@ class ConvertPdfActivity : AppCompatActivity() {
                     report.let {
 
                         if (report.areAllPermissionsGranted()) {
-                            createFolder()
                             Toast.makeText(this@ConvertPdfActivity, "Permissions Granted", Toast.LENGTH_SHORT).show()
                         } else {
                             AlertDialog.Builder(this@ConvertPdfActivity).apply {
@@ -109,45 +126,6 @@ class ConvertPdfActivity : AppCompatActivity() {
             result -> dexter.check()
     }
 
-    private fun pickImageGallery() {
-        Log.d("ddd", "pickImageGallery")
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-
-        galleryActivityResult
-    }
-
-    private val galleryActivityResult = registerForActivityResult<Intent, ActivityResult> (
-        ActivityResultContracts.StartActivityForResult()
-    ) {result ->
-        if(result.resultCode == Activity.RESULT_OK) {
-            val data = result.data
-            imageUri = data!!.data
-            Log.d("ddd", "Gallery Image: $imageUri")
-        } else {
-            Log.d("ddd", "Cancelled")
-            Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
-        }
-
-    }
-
-    private fun pickImageCamera() {
-        Log.d("ddd", "pickImageCamera")
-
-        val contenValue = ContentValues()
-        contenValue.put(MediaStore.Images.Media.TITLE, "TEMP IMAGE TITLE")
-        contenValue.put(MediaStore.Images.Media.DESCRIPTION, "TEMP IMAGE DESCRIPTION")
-
-//        imageUri.c
-    }
-
-    private fun createFolder() {
-        val folder = File(folderPath)
-        if(!folder.exists()) {
-            folder.mkdir()
-        }
-        directory.mkdir()
-    }
 
     private fun goBackHome() {
         val buttonBack = findViewById<ImageView>(R.id.ivHomeBack)
@@ -156,22 +134,48 @@ class ConvertPdfActivity : AppCompatActivity() {
         }
     }
 
-    private fun clickToolbar() {
-        val botton = findViewById<ImageView>(R.id.ivSelectImage)
-        botton.setOnClickListener {
-            val popupMenu: PopupMenu = PopupMenu(this, botton)
-            popupMenu.menuInflater.inflate(R.menu.popup_convert, popupMenu.menu)
-            popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.gallery ->
-                        Toast.makeText(this@ConvertPdfActivity, "" + item.title, Toast.LENGTH_SHORT).show()
-                    R.id.camera ->
-                        Toast.makeText(this@ConvertPdfActivity, "" + item.title, Toast.LENGTH_SHORT).show()
+    private fun pickImagesFromGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        intent.type = "image/*"
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        startActivityForResult(intent, PICK_IMAGES_REQUEST)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == PICK_IMAGES_REQUEST && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                val imageUris = ArrayList<String>()
+
+                if (data.data != null) {
+                    // Trường hợp chọn một ảnh
+                    val selectedImageUri: Uri = data.data!!
+                    imageUris.add(getRealPathFromURI(selectedImageUri))
+                } else {
+                    val clipData: ClipData? = data.clipData
+                    if (clipData != null) {
+                        for (i in 0 until clipData.itemCount) {
+                            val uri: Uri = clipData.getItemAt(i).uri
+                            imageUris.add(getRealPathFromURI(uri))
+                        }
+                    }
                 }
-                true
-            })
-            popupMenu.show()
+
+                images.addAll(imageUris)
+                imageAdapter.notifyDataSetChanged()
+            }
         }
+    }
+
+    private fun getRealPathFromURI(uri: Uri): String {
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor: Cursor? = contentResolver.query(uri, projection, null, null, null)
+        val columnIndex = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        cursor?.moveToFirst()
+        val imagePath = cursor?.getString(columnIndex ?: 0)
+        cursor?.close()
+        return imagePath ?: ""
     }
 
 

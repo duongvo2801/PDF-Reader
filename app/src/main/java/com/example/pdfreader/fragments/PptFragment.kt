@@ -34,7 +34,7 @@ class PptFragment : Fragment() {
 
 
     fun loadAllFilePPT() {
-        binding.rcyPptFile.adapter = null
+//        binding.rcyPptFile.adapter = null
         binding.rcyPptFile.layoutManager = LinearLayoutManager(context)
         val fileHelper = LoadFileFromDevice(requireContext())
 
