@@ -46,7 +46,7 @@ class PptFragment : Fragment() {
     fun loadFavoriteFilePpt() {
         binding.rcyPptFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
-        val fileType = "pptx"
+        val fileType = "ppt"
         val listFileFavorite = dbHelper.getAllFileFavorite(fileType)
         val pdfFiles: MutableList<FileItem> = ArrayList()
 

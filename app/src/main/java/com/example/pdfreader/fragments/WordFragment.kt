@@ -46,7 +46,7 @@ class WordFragment : Fragment() {
     fun loadFavoriteFileWord() {
         binding.rcyWordFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
-        val fileType = "docx"
+        val fileType = "word"
         val listFileFavorite = dbHelper.getAllFileFavorite(fileType)
         val pdfFiles: MutableList<FileItem> = ArrayList()
 

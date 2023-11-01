@@ -80,7 +80,7 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
             else if(fileItem.name.endsWith(".ppt") || fileItem.name.endsWith(".pptx")) {
                 binding.imageFile.setImageResource(R.drawable.icon_ppt)
             }
-            if(dbHelper?.getFile(fileItem.path, fileItem.sizefile) == null) {
+            if(dbHelper?.getFile(fileItem.path, fileItem.typefile) == null) {
                 binding.btnFavorite.setBackgroundResource(R.drawable.baseline_star_border_24)
             }
             else {
@@ -89,7 +89,7 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
 
 
             binding.btnFavorite.setOnClickListener{
-                if(dbHelper?.getFile(fileItem.path, fileItem.sizefile) == null) {
+                if(dbHelper?.getFile(fileItem.path, fileItem.typefile) == null) {
                     var file = FileModel()
                     file.namefile = fileItem.name
                     file.pathfile = fileItem.path
@@ -102,7 +102,7 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
                 else {
                     //remove
                     binding.btnFavorite.setBackgroundResource(R.drawable.baseline_star_border_24)
-                    dbHelper?.delete(fileItem.path, fileItem.sizefile)
+                    dbHelper?.delete(fileItem.path, fileItem.typefile)
                 }
 
             }

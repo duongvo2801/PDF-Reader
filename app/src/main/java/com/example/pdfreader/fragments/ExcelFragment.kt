@@ -48,7 +48,7 @@ class ExcelFragment : Fragment() {
         binding.rcyExcelFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
 
-        val fileType = "xlsx"
+        val fileType = "excel"
         val listFileFavorite = dbHelper.getAllFileFavorite(fileType)
         val pdfFiles: MutableList<FileItem> = ArrayList()
 

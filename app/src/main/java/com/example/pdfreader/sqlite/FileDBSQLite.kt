@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 
 
 class FileDBSQLite(context : Context) : SQLiteOpenHelper(context, DBNAME, null, DB_VERSION) {
@@ -94,7 +95,15 @@ class FileDBSQLite(context : Context) : SQLiteOpenHelper(context, DBNAME, null, 
         val db = this.writableDatabase
         val _success = db.delete(TABLE_NAME, "$FILE_PATH=? AND $FILE_TYPE=?", arrayOf(path, type))
         db.close()
-        return (Integer.parseInt("$_success") != -1)
+//        return (Integer.parseInt("$_success") != -1)
+
+        if (_success > 0) {
+            Log.d("FileDBSQLite", "Đã xóa tệp có đường dẫn: $path và loại: $type")
+            return true
+        } else {
+            Log.e("FileDBSQLite", "Không thể xóa tệp có đường dẫn: $path và loại: $type")
+            return false
+        }
     }
 
 }
