@@ -29,27 +29,29 @@ class WordFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Now you can safely access views using binding
+
         loadAllFileWord()
     }
 
     fun loadAllFileWord() {
-//        binding.rcyWordFile.adapter = null
         binding.rcyWordFile.layoutManager = LinearLayoutManager(context)
         val fileHelper = LoadFileFromDevice(requireContext())
+        val extensions = listOf("docx")
 
-        val adapter = FileAdapter(fileHelper.getAllFilesbyExtension("docx"), requireContext())
+        val adapter = FileAdapter(fileHelper.getAllFilesByExtensions(extensions), requireContext())
         binding.rcyWordFile.adapter = adapter
     }
 
+
     fun loadFavoriteFileWord() {
-//        binding.rcyWordFile.adapter = null
+        binding.rcyWordFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
-        val listFileFavorite = dbHelper.getAllFileFavorite()
+        val fileType = "docx"
+        val listFileFavorite = dbHelper.getAllFileFavorite(fileType)
         val pdfFiles: MutableList<FileItem> = ArrayList()
 
         for (f in listFileFavorite) {
-            var item = FileItem(f.namefile, f.pathfile, f.datefile, f.sizefile)
+            var item = FileItem(f.namefile, f.pathfile, f.datefile, f.sizefile, f.typefile)
             pdfFiles.add(item)
         }
 

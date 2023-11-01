@@ -44,7 +44,7 @@ class LoadAllFile(private val context: Context) {
                     // Convert the timestamp to a human-readable date format
                     val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                     val formattedDate = sdf.format(Date(lastModifiedTime))
-                    files.add(FileItem(file.name, file.path, formattedDate, roundDecimalWithDecimalFormat((file.length() / 1024.0), 2).toString() + "Kb"))
+                    files.add(FileItem(file.name, file.path, formattedDate, roundDecimalWithDecimalFormat((file.length() / 1024.0), 2).toString() + "Kb", getFileType(file.name)) )
                 }
             }
         }
@@ -58,5 +58,24 @@ class LoadAllFile(private val context: Context) {
         }
         return false
     }
+
+    fun getFileType(fileName: String): String {
+        val lastDotIndex = fileName.lastIndexOf(".")
+
+        if (lastDotIndex == -1 || lastDotIndex == 0 || lastDotIndex == fileName.length - 1) {
+
+        }
+
+        val fileExtension = fileName.substring(lastDotIndex + 1)
+
+        return when (fileExtension.toLowerCase()) {
+            "pdf" -> "pdf"
+            "doc", "docx" -> "word"
+            "xls", "xlsx" -> "excel"
+            "ppt", "pptx" -> "ppt"
+            else -> "other"
+        }
+    }
+
 
 }

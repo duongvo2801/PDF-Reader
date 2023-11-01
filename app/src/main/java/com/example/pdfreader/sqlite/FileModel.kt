@@ -6,4 +6,5 @@ class FileModel {
     var pathfile: String = ""
     var datefile: String = ""
     var sizefile: String = ""
+    var typefile: String = ""
 }

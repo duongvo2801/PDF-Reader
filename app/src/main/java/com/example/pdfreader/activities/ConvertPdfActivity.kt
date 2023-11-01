@@ -7,16 +7,19 @@ import android.content.ClipData
 import android.content.Intent
 import android.database.Cursor
 import android.graphics.BitmapFactory
+import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pdfreader.R
@@ -27,12 +30,12 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import android.graphics.Bitmap
-import android.graphics.pdf.PdfDocument
-import android.widget.Button
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ConvertPdfActivity : AppCompatActivity() {
 
@@ -41,6 +44,7 @@ class ConvertPdfActivity : AppCompatActivity() {
     private val images = ArrayList<String>()
     private lateinit var recyclerView: RecyclerView
     private lateinit var imageAdapter: ImageAdapter
+    private var capturedImageUri: Uri? = null
 
     companion object {
         private const val PICK_IMAGES_REQUEST = 100
@@ -74,8 +78,10 @@ class ConvertPdfActivity : AppCompatActivity() {
                         Toast.makeText(this@ConvertPdfActivity, "" + item.title, Toast.LENGTH_SHORT)
                             .show()
                     }
-                    R.id.camera ->
+                    R.id.camera ->{
+                        dispatchTakePictureIntent()
                         Toast.makeText(this@ConvertPdfActivity, "" + item.title, Toast.LENGTH_SHORT).show()
+                    }
                 }
                 true
             })
@@ -93,6 +99,26 @@ class ConvertPdfActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    // camera
+    private fun dispatchTakePictureIntent() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (takePictureIntent.resolveActivity(packageManager) != null) {
+            val photoFile: File? = createImageFile()
+            if (photoFile != null) {
+                capturedImageUri = FileProvider.getUriForFile(this, "com.example.pdfreader.fileprovider", photoFile)
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, capturedImageUri)
+                startActivityForResult(takePictureIntent, CAMERA_PERMISSION_REQUEST)
+            }
+        }
+    }
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val imageFileName = "JPEG_$timeStamp.jpg"
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(imageFileName, ".jpg", storageDir)
     }
 
     // gallery
@@ -127,6 +153,15 @@ class ConvertPdfActivity : AppCompatActivity() {
                 imageAdapter.notifyDataSetChanged()
             }
         }
+
+        // camera
+        if (requestCode == PICK_IMAGES_REQUEST && resultCode == Activity.RESULT_OK) {
+            if (capturedImageUri != null) {
+                images.add(capturedImageUri.toString())
+                imageAdapter.notifyDataSetChanged()
+            }
+        }
+
     }
     private fun getRealPathFromURI(uri: Uri): String {
         val projection = arrayOf(MediaStore.Images.Media.DATA)

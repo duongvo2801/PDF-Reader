@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.pdfreader"
-        minSdk 28
+        minSdk 27
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -72,5 +72,17 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.16.0'
 
     implementation 'com.itextpdf:itext7-core:7.2.4'
+
+    // read word, excel, powerpoint
+    implementation 'org.apache.poi:poi:5.2.3'
+    implementation 'org.apache.poi:poi-ooxml:5.2.3'
+
+//    implementation 'org.apache.poi:poi-scratchpad:5.2.3'
+//    implementation 'javax.xml.stream:stax-api:1.0'
+
+    // convert
+//    implementation 'com.qoppa:jwordconvert:1.6'
+
+
 
 }

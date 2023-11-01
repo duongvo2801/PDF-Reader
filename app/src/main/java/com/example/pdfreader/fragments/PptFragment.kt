@@ -34,11 +34,11 @@ class PptFragment : Fragment() {
 
 
     fun loadAllFilePPT() {
-//        binding.rcyPptFile.adapter = null
         binding.rcyPptFile.layoutManager = LinearLayoutManager(context)
         val fileHelper = LoadFileFromDevice(requireContext())
+        val extensions = listOf("pptx")
 
-        val adapter = FileAdapter(fileHelper.getAllFilesbyExtension("pptx"), requireContext())
+        val adapter = FileAdapter(fileHelper.getAllFilesByExtensions(extensions), requireContext())
         binding.rcyPptFile.adapter = adapter
     }
 
@@ -46,11 +46,12 @@ class PptFragment : Fragment() {
     fun loadFavoriteFilePpt() {
         binding.rcyPptFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
-        val listFileFavorite = dbHelper.getAllFileFavorite()
+        val fileType = "pptx"
+        val listFileFavorite = dbHelper.getAllFileFavorite(fileType)
         val pdfFiles: MutableList<FileItem> = ArrayList()
 
         for (f in listFileFavorite) {
-            var item = FileItem(f.namefile, f.pathfile, f.datefile, f.sizefile)
+            var item = FileItem(f.namefile, f.pathfile, f.datefile, f.sizefile, f.typefile)
             pdfFiles.add(item)
         }
 

@@ -42,6 +42,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var scanFAB: FloatingActionButton
     var fabVisible = false
 
+    //
+    private var currentNavItem = R.id.documentation
+
+
     private val pdfFragment by lazy { PdfFragment() }
     private val wordFragment by lazy { WordFragment() }
     private val excelFragment by lazy { ExcelFragment() }
@@ -119,9 +123,31 @@ class MainActivity : AppCompatActivity() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.position?.let {
                     binding.viewpage.currentItem = it
+                    when (currentNavItem) {
+                        R.id.documentation -> {
+                            when (it) {
+                                0 -> pdfFragment.loadAllFilePDF()
+                                1 -> wordFragment.loadAllFileWord()
+                                2 -> excelFragment.loadAllFileExcel()
+                                3 -> pptFragment.loadAllFilePPT()
+                            }
+                        }
+                        R.id.favor -> {
+                            when (it) {
+                                0 -> pdfFragment.loadFavoriteFilePdf()
+                                1 -> wordFragment.loadFavoriteFileWord()
+                                2 -> excelFragment.loadFavoriteFileExcel()
+                                3 -> pptFragment.loadFavoriteFilePpt()
+                            }
+                        }
+                        R.id.recent -> {
+
+                        }
+                    }
+
+
                     when(it) {
                         0 -> {
-
                             toolBar.setBackgroundColor(Color.parseColor("#b30b00"))
                             binding.tabLayoutView.setBackgroundColor(Color.parseColor("#b30b00"))
                             window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.pdf)
@@ -158,53 +184,25 @@ class MainActivity : AppCompatActivity() {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
-        binding.navigationmenu.setOnItemSelectedListener {
-            when(it.itemId){
+        binding.navigationmenu.setOnItemSelectedListener {item ->
+            currentNavItem = item.itemId
+            when(item.itemId){
                 R.id.documentation -> {
                     when(binding.viewpage.currentItem) {
-                        0 -> {
-                            pdfFragment.loadAllFilePDF()
-                            true
-                        }
-                        1 -> {
-                            wordFragment.loadAllFileWord()
-                            true
-                        }
-                        2 -> {
-                            excelFragment.loadAllFileExcel()
-                            true
-                        }
-                        3 -> {
-                            pptFragment.loadAllFilePPT()
-                            true
-                        }
+                        0 -> pdfFragment.loadAllFilePDF()
+                        1 -> wordFragment.loadAllFileWord()
+                        2 -> excelFragment.loadAllFileExcel()
+                        3 -> pptFragment.loadAllFilePPT()
                     }
-
                     true
                 }
                 R.id.favor -> {
                     when(binding.viewpage.currentItem) {
-                        0 -> {
-                            //pdf
-                            pdfFragment.loadFavoriteFilePdf()
-                            true
-                        }
-                        1 -> {
-                            wordFragment.loadFavoriteFileWord()
-                            true
-                        }
-                        2 -> {
-                            //excel
-                            excelFragment.loadFavoriteFileExcel()
-                            true
-                        }
-                        3 -> {
-                            //ppt
-                            pptFragment.loadFavoriteFilePpt()
-                            true
-                        }
+                        0 -> pdfFragment.loadFavoriteFilePdf()
+                        1 -> wordFragment.loadFavoriteFileWord()
+                        2 -> excelFragment.loadFavoriteFileExcel()
+                        3 -> pptFragment.loadFavoriteFilePpt()
                     }
-
                     true
                 }
                 R.id.recent -> {
@@ -212,9 +210,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-                else -> {
-                    true
-                }
+                else -> true
             }
         }
 

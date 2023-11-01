@@ -34,23 +34,26 @@ class ExcelFragment : Fragment() {
 
 
     fun loadAllFileExcel() {
-//        binding.rcyExcelFile.adapter = null
         binding.rcyExcelFile.layoutManager = LinearLayoutManager(context)
         val fileHelper = LoadFileFromDevice(requireContext())
+        val extensions = listOf("xlsx")
 
-        val adapter = FileAdapter(fileHelper.getAllFilesbyExtension("xlsx"), requireContext())
+        val adapter = FileAdapter(fileHelper.getAllFilesByExtensions(extensions), requireContext())
         binding.rcyExcelFile.adapter = adapter
     }
 
 
+
     fun loadFavoriteFileExcel() {
-//        binding.rcyExcelFile.adapter = null
+        binding.rcyExcelFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
-        val listFileFavorite = dbHelper.getAllFileFavorite()
+
+        val fileType = "xlsx"
+        val listFileFavorite = dbHelper.getAllFileFavorite(fileType)
         val pdfFiles: MutableList<FileItem> = ArrayList()
 
         for (f in listFileFavorite) {
-            var item = FileItem(f.namefile, f.pathfile, f.datefile, f.sizefile)
+            var item = FileItem(f.namefile, f.pathfile, f.datefile, f.sizefile, f.typefile)
             pdfFiles.add(item)
         }
 

@@ -44,16 +44,16 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val pdfFile = allFiles[position]
+        val selectFile = allFiles[position]
         val dbHelper = FileDBSQLite(context)
-        holder.bind(pdfFile,dbHelper)
+        holder.bind(selectFile, dbHelper)
         holder.itemView.setOnClickListener {
             val intent = Intent(context, DocumentReaderActivity::class.java)
-            intent.putExtra("path", pdfFile.path)
+            intent.putExtra("path", selectFile.path)
             context.startActivity(intent)
         }
-
     }
+
 
     override fun getItemCount(): Int {
         return allFiles.size
@@ -80,7 +80,7 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
             else if(fileItem.name.endsWith(".ppt") || fileItem.name.endsWith(".pptx")) {
                 binding.imageFile.setImageResource(R.drawable.icon_ppt)
             }
-            if(dbHelper?.getFile(fileItem.path) == null) {
+            if(dbHelper?.getFile(fileItem.path, fileItem.sizefile) == null) {
                 binding.btnFavorite.setBackgroundResource(R.drawable.baseline_star_border_24)
             }
             else {
@@ -89,19 +89,20 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
 
 
             binding.btnFavorite.setOnClickListener{
-                if(dbHelper?.getFile(fileItem.path) == null) {
+                if(dbHelper?.getFile(fileItem.path, fileItem.sizefile) == null) {
                     var file = FileModel()
                     file.namefile = fileItem.name
                     file.pathfile = fileItem.path
                     file.datefile = fileItem.datefile
                     file.sizefile = fileItem.sizefile
+                    file.typefile = fileItem.typefile
                     dbHelper?.addFile(file)
                     binding.btnFavorite.setBackgroundResource(R.drawable.baseline_star_24)
                 }
                 else {
                     //remove
                     binding.btnFavorite.setBackgroundResource(R.drawable.baseline_star_border_24)
-                    dbHelper?.delete(fileItem.path)
+                    dbHelper?.delete(fileItem.path, fileItem.sizefile)
                 }
 
             }

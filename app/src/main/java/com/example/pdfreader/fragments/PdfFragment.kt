@@ -84,11 +84,11 @@ class PdfFragment : Fragment(){
 
 
     fun loadAllFilePDF() {
-//        binding.rcyPdfFile.adapter = null
         binding.rcyPdfFile.layoutManager = LinearLayoutManager(context)
         val fileHelper = LoadFileFromDevice(requireContext())
+        val extensions = listOf("pdf")
 
-        val adapter = FileAdapter(fileHelper.getAllFilesbyExtension("pdf"), requireContext())
+        val adapter = FileAdapter(fileHelper.getAllFilesByExtensions(extensions), requireContext())
         binding.rcyPdfFile.adapter = adapter
 
     }
@@ -96,11 +96,13 @@ class PdfFragment : Fragment(){
     fun loadFavoriteFilePdf() {
         binding.rcyPdfFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
-        val listFileFavorite = dbHelper.getAllFileFavorite()
+
+        val fileType = "pdf"
+        val listFileFavorite = dbHelper.getAllFileFavorite(fileType)
         val pdfFiles: MutableList<FileItem> = ArrayList()
 
         for (f in listFileFavorite) {
-            var item = FileItem(f.namefile, f.pathfile, f.datefile, f.sizefile)
+            var item = FileItem(f.namefile, f.pathfile, f.datefile, f.sizefile, f.typefile)
             pdfFiles.add(item)
         }
 
