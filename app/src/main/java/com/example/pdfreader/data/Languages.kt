@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.res.Configuration
 import java.util.Locale
 
-class Libs {
+class Languages {
 
     companion object {
         private var myLocale: Locale? = null

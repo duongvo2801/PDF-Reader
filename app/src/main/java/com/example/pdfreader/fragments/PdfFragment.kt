@@ -10,8 +10,6 @@ import com.example.pdfreader.adapters.FileAdapter
 import com.example.pdfreader.databinding.FragmentPdfBinding
 import com.example.pdfreader.databinding.ItemFileBinding
 import com.example.pdfreader.entities.FileItem
-import com.example.pdfreader.entities.SortOrder
-import com.example.pdfreader.entities.SortType
 import com.example.pdfreader.sqlite.FileDBSQLite
 import com.example.pdfreader.utils.LoadFileFromDevice
 
@@ -22,9 +20,22 @@ class PdfFragment : Fragment(){
     private lateinit var item: ItemFileBinding
     private lateinit var adapter: FileAdapter
 
-    // sort file
-    private var currentSortOrder: SortOrder = SortOrder.ASCENDING
-    private var currentSortType: SortType = SortType.NAME
+
+//    // sort file
+//    private var currentSortOrder: SortOrder = SortOrder.ASCENDING
+//    var currentSortType: SortType = SortType.NAME
+//
+//    enum class SortOrder {
+//        ASCENDING, // Tăng dần
+//        DESCENDING // Giảm dần
+//    }
+//
+//    enum class SortType {
+//        NAME,
+//        SIZE,
+//        DATE
+//    }
+
 
 
     override fun onCreateView(
@@ -42,45 +53,49 @@ class PdfFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        binding.rcyPdfFile = view.findViewById(R.id.rcy_pdf_file)
 
         loadAllFilePDF()
-        sortAndRefreshList()
+
+
 
         val newFiles = listOf<FileItem>()
         adapter.updateFileList(newFiles)
 
     }
 
-     fun sortAndRefreshList() {
-//        val fileHelper = LoadFileFromDevice(requireContext())
-//        val pdfFiles = fileHelper.getAllFilesbyExtension("pdf")
 
-//        when (currentSortType) {
+
+//    fun updateListWithCurrentSortType() {
+//        sortAndRefreshList()
+//    }
+//
+//    fun sortAndRefreshList() {
+//        val sortedFiles = when (currentSortType) {
 //            SortType.NAME -> {
-//                pdfFiles.sortWith(compareBy { it.name })
-//            }
-//            SortType.DATE -> {
-//                pdfFiles.sortWith(compareBy { it.date })
+//                if (currentSortOrder == SortOrder.ASCENDING) {
+//                    adapter.updateFileList(adapter.getAllFiles().sortedBy { it.name })
+//                } else {
+//                    adapter.updateFileList(adapter.getAllFiles().sortedByDescending { it.name })
+//                }
 //            }
 //            SortType.SIZE -> {
-//                pdfFiles.sortWith(compareBy { it.size })
+//                if (currentSortOrder == SortOrder.ASCENDING) {
+//                    adapter.updateFileList(adapter.getAllFiles().sortedBy { it.sizefile })
+//                } else {
+//                    adapter.updateFileList(adapter.getAllFiles().sortedByDescending { it.sizefile })
+//                }
+//            }
+//            SortType.DATE -> {
+//                if (currentSortOrder == SortOrder.ASCENDING) {
+//                    adapter.updateFileList(adapter.getAllFiles().sortedBy { it.datefile })
+//                } else {
+//                    adapter.updateFileList(adapter.getAllFiles().sortedByDescending { it.datefile })
+//                }
 //            }
 //        }
-//
-//        if (currentSortOrder == SortOrder.DESCENDING) {
-//            pdfFiles.reverse()
-//        }
-//
-//        adapter.updateFileList(pdfFiles)
-    }
-
-
-
-//    override fun onAttach(context: Context) {
-//        super.onAttach(context)
-//
 //    }
+
+
 
 
     fun loadAllFilePDF() {

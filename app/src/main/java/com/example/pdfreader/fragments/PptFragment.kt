@@ -16,6 +16,8 @@ import com.example.pdfreader.utils.LoadFileFromDevice
 class PptFragment : Fragment() {
 
     private lateinit var binding: FragmentPptBinding
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,6 +33,8 @@ class PptFragment : Fragment() {
         // Now you can safely access views using binding
         loadAllFilePPT()
     }
+
+
 
 
     fun loadAllFilePPT() {
@@ -60,4 +64,6 @@ class PptFragment : Fragment() {
 
 
     }
+
+
 }

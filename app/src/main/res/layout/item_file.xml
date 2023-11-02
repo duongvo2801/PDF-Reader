@@ -25,7 +25,7 @@
         <TextView
             android:id="@+id/tv_name_file"
             android:text="File name"
-            android:textSize="18sp"
+            android:textSize="17sp"
             android:textColor="@color/black"
             android:maxLength="30"
             android:maxLines="1"

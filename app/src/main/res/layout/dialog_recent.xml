@@ -4,11 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fragment_pdf"
-    tools:context=".fragments.PdfFragment">
+    android:id="@+id/fragment_pdf">
+
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcy_pdf_file"
+        android:id="@+id/recyclerViewRecent"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

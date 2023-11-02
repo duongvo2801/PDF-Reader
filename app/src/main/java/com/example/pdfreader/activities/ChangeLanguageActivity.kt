@@ -8,7 +8,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.pdfreader.R
-import com.example.pdfreader.data.Libs
+import com.example.pdfreader.data.Languages
 
 class ChangeLanguageActivity : AppCompatActivity() {
 
@@ -31,7 +31,7 @@ class ChangeLanguageActivity : AppCompatActivity() {
             else -> ""
         }
 
-        Libs.changeLang(lang, this)
+        Languages.changeLang(lang, this)
         Log.e("LANG", lang)
 
         // recreate screen

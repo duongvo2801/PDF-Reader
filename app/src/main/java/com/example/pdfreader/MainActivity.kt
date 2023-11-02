@@ -18,7 +18,7 @@ import com.example.pdfreader.activities.ConvertPdfActivity
 import com.example.pdfreader.activities.PremiumActivity
 import com.example.pdfreader.activities.SearchActivity
 import com.example.pdfreader.adapters.ViewPagerAdapter
-import com.example.pdfreader.data.Libs
+import com.example.pdfreader.data.Languages
 import com.example.pdfreader.databinding.ActivityMainBinding
 import com.example.pdfreader.fragments.PdfFragment
 import com.example.pdfreader.fragments.WordFragment
@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("CommonPrefs", Activity.MODE_PRIVATE)
         val lang = prefs.getString("Language", "en") ?: "en"
         Log.e("DEBUG", lang)
-        Libs.loadLocale(this)
+        Languages.loadLocale(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,7 +95,6 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         val toolBar = findViewById<LinearLayout>(R.id.toolbar)
         clickToolbar()
@@ -206,7 +205,9 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.recent -> {
-
+                    when(binding.viewpage.currentItem) {
+//                        0 -> pdfFragment.openFile()
+                    }
                     true
                 }
 
@@ -243,7 +244,7 @@ class MainActivity : AppCompatActivity() {
             popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.toolbarName -> {
-//                        sortAndRefreshList
+
                         Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
                     }
 
