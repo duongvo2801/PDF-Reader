@@ -104,8 +104,8 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
                     binding.btnFavorite.setBackgroundResource(R.drawable.baseline_star_border_24)
                     dbHelper?.delete(fileItem.path, fileItem.typefile)
                 }
-
             }
+
             binding.moreFile.setOnClickListener { view ->
                 val popupMenu = PopupMenu(context, view)
                 popupMenu.menuInflater.inflate(R.menu.popup_action, popupMenu.menu)

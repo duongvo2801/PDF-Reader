@@ -1,5 +1,6 @@
 package com.example.pdfreader.fragments
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,8 @@ class PdfFragment : Fragment(){
     private lateinit var binding: FragmentPdfBinding
     private lateinit var item: ItemFileBinding
     private lateinit var adapter: FileAdapter
+
+    private lateinit var sharedPreferences: SharedPreferences
 
 
 //    // sort file
@@ -56,45 +59,7 @@ class PdfFragment : Fragment(){
 
         loadAllFilePDF()
 
-
-
-        val newFiles = listOf<FileItem>()
-        adapter.updateFileList(newFiles)
-
     }
-
-
-
-//    fun updateListWithCurrentSortType() {
-//        sortAndRefreshList()
-//    }
-//
-//    fun sortAndRefreshList() {
-//        val sortedFiles = when (currentSortType) {
-//            SortType.NAME -> {
-//                if (currentSortOrder == SortOrder.ASCENDING) {
-//                    adapter.updateFileList(adapter.getAllFiles().sortedBy { it.name })
-//                } else {
-//                    adapter.updateFileList(adapter.getAllFiles().sortedByDescending { it.name })
-//                }
-//            }
-//            SortType.SIZE -> {
-//                if (currentSortOrder == SortOrder.ASCENDING) {
-//                    adapter.updateFileList(adapter.getAllFiles().sortedBy { it.sizefile })
-//                } else {
-//                    adapter.updateFileList(adapter.getAllFiles().sortedByDescending { it.sizefile })
-//                }
-//            }
-//            SortType.DATE -> {
-//                if (currentSortOrder == SortOrder.ASCENDING) {
-//                    adapter.updateFileList(adapter.getAllFiles().sortedBy { it.datefile })
-//                } else {
-//                    adapter.updateFileList(adapter.getAllFiles().sortedByDescending { it.datefile })
-//                }
-//            }
-//        }
-//    }
-
 
 
 
@@ -104,6 +69,24 @@ class PdfFragment : Fragment(){
         val extensions = listOf("pdf")
 
         val adapter = FileAdapter(fileHelper.getAllFilesByExtensions(extensions), requireContext())
+        binding.rcyPdfFile.adapter = adapter
+
+    }
+
+    fun loadRecentFilePdf() {
+        binding.rcyPdfFile.adapter = null
+        val dbHelper = FileDBSQLite(requireContext())
+
+        val fileType = "pdf"
+        val listFileFavorite = dbHelper.getAllFileFavorite(fileType)
+        val pdfFiles: MutableList<FileItem> = ArrayList()
+
+        for (f in listFileFavorite) {
+            var item = FileItem(f.namefile, f.pathfile, f.datefile, f.sizefile, f.typefile)
+            pdfFiles.add(item)
+        }
+
+        val adapter = FileAdapter(pdfFiles, requireContext())
         binding.rcyPdfFile.adapter = adapter
 
     }

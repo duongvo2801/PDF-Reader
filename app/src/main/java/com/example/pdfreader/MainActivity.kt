@@ -56,30 +56,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun checkPermission() {
-        Dexter.withContext(this)
-            .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-            .withListener(object : PermissionListener {
-                override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                    // Permission granted, you can now proceed to set up your RecyclerView
-
-                }
-
-                override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                    // Handle permission denied, for example, show a message or request again
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    permission: PermissionRequest?,
-                    token: PermissionToken?
-                ) {
-                    // Optionally show a rationale to the user before the permission request
-                    token?.continuePermissionRequest()
-                }
-            })
-            .check()
-    }
-
     override fun onResume() {
         super.onResume()
 
@@ -107,6 +83,8 @@ class MainActivity : AppCompatActivity() {
         binding.tabLayoutView.addTab(binding.tabLayoutView.newTab().setText("WORD"))
         binding.tabLayoutView.addTab(binding.tabLayoutView.newTab().setText("EXCEL"))
         binding.tabLayoutView.addTab(binding.tabLayoutView.newTab().setText("PPT"))
+
+
 
         toolBar.setBackgroundColor(Color.parseColor("#b30b00"))
         binding.tabLayoutView.setBackgroundColor(Color.parseColor("#b30b00"))
@@ -140,7 +118,9 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                         R.id.recent -> {
-
+                            when (it) {
+                                0 -> pdfFragment.loadRecentFilePdf()
+                            }
                         }
                     }
 
@@ -206,7 +186,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.recent -> {
                     when(binding.viewpage.currentItem) {
-//                        0 -> pdfFragment.openFile()
+                        0 -> pdfFragment.loadRecentFilePdf()
                     }
                     true
                 }
@@ -221,6 +201,30 @@ class MainActivity : AppCompatActivity() {
         scanFAB.setOnClickListener {
             startActivity(Intent(this, ConvertPdfActivity::class.java))
         }
+    }
+
+    fun checkPermission() {
+        Dexter.withContext(this)
+            .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .withListener(object : PermissionListener {
+                override fun onPermissionGranted(response: PermissionGrantedResponse) {
+                    // Permission granted, you can now proceed to set up your RecyclerView
+
+                }
+
+                override fun onPermissionDenied(response: PermissionDeniedResponse) {
+                    // Handle permission denied, for example, show a message or request again
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permission: PermissionRequest?,
+                    token: PermissionToken?
+                ) {
+                    // Optionally show a rationale to the user before the permission request
+                    token?.continuePermissionRequest()
+                }
+            })
+            .check()
     }
 
     private fun clickToolbar() {

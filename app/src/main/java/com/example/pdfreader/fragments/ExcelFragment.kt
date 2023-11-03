@@ -30,6 +30,7 @@ class ExcelFragment : Fragment() {
 
         // Now you can safely access views using binding
         loadAllFileExcel()
+
     }
 
 

@@ -15,6 +15,7 @@
         android:layout_height="@dimen/_40sdp"/>
 
     <LinearLayout
+        android:id="@+id/detailFile"
         android:layout_toRightOf="@+id/image_file"
         android:layout_marginLeft="@dimen/_6sdp"
         android:layout_width="match_parent"

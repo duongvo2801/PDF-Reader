@@ -54,6 +54,9 @@ class FileDBSQLite(context : Context) : SQLiteOpenHelper(context, DBNAME, null, 
         cursor.close()
         return fileFavList
     }
+
+
+
     fun getFile(path : String,  type: String) : FileModel? {
 
         val db = writableDatabase
