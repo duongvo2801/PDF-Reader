@@ -4,6 +4,9 @@ import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,10 +51,24 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
         val dbHelper = FileDBSQLite(context)
         holder.bind(selectFile, dbHelper)
         holder.itemView.setOnClickListener {
+            //
+            val selectedFilePath = selectFile.path
+            saveSelectedFilePathAndPerformAction(selectedFilePath)
+
             val intent = Intent(context, DocumentReaderActivity::class.java)
             intent.putExtra("path", selectFile.path)
             context.startActivity(intent)
         }
+    }
+
+    private fun saveSelectedFilePathAndPerformAction(selectedFilePath: String) {
+        val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.putString("selected_file_path", selectedFilePath)
+        editor.apply()
+
+        // Thực hiện các tác vụ khác ở đây, ví dụ: hiển thị Toast
+        Toast.makeText(context, "Đã lưu đường dẫn: $selectedFilePath", Toast.LENGTH_SHORT).show()
     }
 
 
@@ -135,6 +152,7 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
                 popupMenu.show()
             }
         }
+
 
         private fun copyFile(fileItem: FileItem) {
             // file source

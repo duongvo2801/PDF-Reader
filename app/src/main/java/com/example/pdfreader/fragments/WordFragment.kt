@@ -1,6 +1,7 @@
 package com.example.pdfreader.fragments
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,9 @@ import com.example.pdfreader.databinding.FragmentWordBinding
 import com.example.pdfreader.entities.FileItem
 import com.example.pdfreader.sqlite.FileDBSQLite
 import com.example.pdfreader.utils.LoadFileFromDevice
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class WordFragment : Fragment() {
@@ -40,6 +44,38 @@ class WordFragment : Fragment() {
 
         val adapter = FileAdapter(fileHelper.getAllFilesByExtensions(extensions), requireContext())
         binding.rcyWordFile.adapter = adapter
+    }
+
+    fun loadPdfFileByPath() {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val selectedFilePath = sharedPreferences.getString("selected_file_path", null)
+
+        if (selectedFilePath != null) {
+            val pdfFiles: MutableList<FileItem> = ArrayList()
+            val file = File(selectedFilePath)
+            if (file.exists()) {
+                val fileName = file.name
+                val dateModified = SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(file.lastModified())
+                val fileSize = getFileSize(file)
+                val fileType = "pdf"
+                val fileItem = FileItem(fileName, selectedFilePath, dateModified, fileSize, fileType)
+                pdfFiles.add(fileItem)
+
+                val adapter = FileAdapter(pdfFiles, requireContext())
+                binding.rcyWordFile.adapter = adapter
+            }
+        }
+    }
+
+    private fun getFileSize(file: File): String {
+        val length = file.length()
+        val lengthInKB = length / 1024
+        return if (lengthInKB >= 1024) {
+            val lengthInMB = lengthInKB / 1024
+            String.format(Locale.US, "%.2f MB", lengthInMB.toFloat())
+        } else {
+            String.format(Locale.US, "%d KB", lengthInKB)
+        }
     }
 
 

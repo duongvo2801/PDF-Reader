@@ -119,7 +119,8 @@ class MainActivity : AppCompatActivity() {
                         }
                         R.id.recent -> {
                             when (it) {
-                                0 -> pdfFragment.loadRecentFilePdf()
+                                0 -> pdfFragment.loadPdfFileByPath()
+                                1 -> wordFragment.loadPdfFileByPath()
                             }
                         }
                     }
@@ -186,7 +187,8 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.recent -> {
                     when(binding.viewpage.currentItem) {
-                        0 -> pdfFragment.loadRecentFilePdf()
+                        0 -> pdfFragment.loadPdfFileByPath()
+                        1 -> wordFragment.loadPdfFileByPath()
                     }
                     true
                 }
@@ -194,6 +196,8 @@ class MainActivity : AppCompatActivity() {
                 else -> true
             }
         }
+
+        
 
         imageToPdfFAB.setOnClickListener {
             startActivity(Intent(this, ConvertPdfActivity::class.java))

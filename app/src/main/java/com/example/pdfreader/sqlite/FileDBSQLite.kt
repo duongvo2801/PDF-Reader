@@ -31,6 +31,7 @@ class FileDBSQLite(context : Context) : SQLiteOpenHelper(context, DBNAME, null, 
         }
     }
 
+    //
     fun getAllFileFavorite(type: String) : List<FileModel> {
         val fileFavList = ArrayList<FileModel>()
         val db = writableDatabase
@@ -54,7 +55,6 @@ class FileDBSQLite(context : Context) : SQLiteOpenHelper(context, DBNAME, null, 
         cursor.close()
         return fileFavList
     }
-
 
 
     fun getFile(path : String,  type: String) : FileModel? {
