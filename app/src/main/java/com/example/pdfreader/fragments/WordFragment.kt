@@ -48,7 +48,7 @@ class WordFragment : Fragment() {
 
     fun loadPdfFileByPath() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val selectedFilePath = sharedPreferences.getString("selected_file_path", null)
+        val selectedFilePath = sharedPreferences.getString("selected_file_path_word", null)
 
         if (selectedFilePath != null) {
             val pdfFiles: MutableList<FileItem> = ArrayList()

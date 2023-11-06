@@ -28,7 +28,7 @@
             android:text="File name"
             android:textSize="17sp"
             android:textColor="@color/black"
-            android:maxLength="30"
+            android:maxLength="21"
             android:maxLines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

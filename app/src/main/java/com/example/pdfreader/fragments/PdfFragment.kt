@@ -26,20 +26,20 @@ class PdfFragment : Fragment(){
 
 
 
-//    // sort file
-//    private var currentSortOrder: SortOrder = SortOrder.ASCENDING
-//    var currentSortType: SortType = SortType.NAME
-//
-//    enum class SortOrder {
-//        ASCENDING, // Tăng dần
-//        DESCENDING // Giảm dần
-//    }
-//
-//    enum class SortType {
-//        NAME,
-//        SIZE,
-//        DATE
-//    }
+    // sort file
+    private var currentSortOrder: SortOrder = SortOrder.ASCENDING
+    var currentSortType: SortType = SortType.NAME
+
+    enum class SortOrder {
+        ASCENDING, // Tăng dần
+        DESCENDING // Giảm dần
+    }
+
+    enum class SortType {
+        NAME,
+        SIZE,
+        DATE
+    }
 
 
 
@@ -58,6 +58,8 @@ class PdfFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.rcyPdfFile.layoutManager = LinearLayoutManager(context)
+        binding.rcyPdfFile.adapter = adapter // Đặt adapter lên RecyclerView
 
         loadAllFilePDF()
 
@@ -77,7 +79,7 @@ class PdfFragment : Fragment(){
 
     fun loadPdfFileByPath() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val selectedFilePath = sharedPreferences.getString("selected_file_path", null)
+        val selectedFilePath = sharedPreferences.getString("selected_file_path_pdf", null)
 
         if (selectedFilePath != null) {
             val pdfFiles: MutableList<FileItem> = ArrayList()
@@ -110,7 +112,7 @@ class PdfFragment : Fragment(){
 
 
     fun loadFavoriteFilePdf() {
-        binding.rcyPdfFile.adapter = null
+//        binding.rcyPdfFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
 
         val fileType = "pdf"
@@ -126,6 +128,7 @@ class PdfFragment : Fragment(){
         binding.rcyPdfFile.adapter = adapter
 
     }
+
 
 
 }

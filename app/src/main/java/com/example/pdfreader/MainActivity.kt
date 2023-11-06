@@ -17,6 +17,7 @@ import com.example.pdfreader.activities.ChangeLanguageActivity
 import com.example.pdfreader.activities.ConvertPdfActivity
 import com.example.pdfreader.activities.PremiumActivity
 import com.example.pdfreader.activities.SearchActivity
+import com.example.pdfreader.adapters.FileAdapter
 import com.example.pdfreader.adapters.ViewPagerAdapter
 import com.example.pdfreader.data.Languages
 import com.example.pdfreader.databinding.ActivityMainBinding
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var addFAB: FloatingActionButton
     lateinit var imageToPdfFAB: FloatingActionButton
     lateinit var scanFAB: FloatingActionButton
+    private lateinit var adapter: FileAdapter
     var fabVisible = false
 
     //
@@ -74,6 +76,9 @@ class MainActivity : AppCompatActivity() {
 
         val toolBar = findViewById<LinearLayout>(R.id.toolbar)
         clickToolbar()
+
+
+        adapter = FileAdapter(ArrayList(), this)
 
         checkPermission()
         setFAB()
@@ -121,6 +126,8 @@ class MainActivity : AppCompatActivity() {
                             when (it) {
                                 0 -> pdfFragment.loadPdfFileByPath()
                                 1 -> wordFragment.loadPdfFileByPath()
+                                2 -> excelFragment.loadPdfFileByPath()
+                                2 -> pptFragment.loadPdfFileByPath()
                             }
                         }
                     }
@@ -189,6 +196,8 @@ class MainActivity : AppCompatActivity() {
                     when(binding.viewpage.currentItem) {
                         0 -> pdfFragment.loadPdfFileByPath()
                         1 -> wordFragment.loadPdfFileByPath()
+                        2 -> excelFragment.loadPdfFileByPath()
+                        3 -> pptFragment.loadPdfFileByPath()
                     }
                     true
                 }
@@ -256,10 +265,8 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
                     }
 
-                    R.id.toolbarEdit ->
-                        Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
-                    R.id.toolbarSize ->
-                        Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
+                    // ...
+
                 }
                 true
             })

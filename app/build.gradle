@@ -80,13 +80,17 @@ dependencies {
     // read word, excel, powerpoint
     implementation 'org.apache.poi:poi:5.2.3'
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
+    implementation 'org.apache.poi:poi-scratchpad:5.2.3'
+
+//    implementation 'org.apache.tika:tika-core:2.2.0'
+//    implementation 'org.apache.tika:tika-parsers:2.2.0'
+//    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-io:0.10.2"
+
 
     //
     implementation group: 'org.apache.poi', name: 'poi', version: '5.2.0'
 
 
-
-//    implementation 'org.apache.poi:poi-scratchpad:5.2.3'
 //    implementation 'javax.xml.stream:stax-api:1.0'
 
     // convert

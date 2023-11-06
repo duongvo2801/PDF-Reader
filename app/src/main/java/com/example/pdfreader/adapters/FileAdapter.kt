@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,25 +50,60 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
         val dbHelper = FileDBSQLite(context)
         holder.bind(selectFile, dbHelper)
         holder.itemView.setOnClickListener {
-            //
             val selectedFilePath = selectFile.path
-            saveSelectedFilePathAndPerformAction(selectedFilePath)
-
-            val intent = Intent(context, DocumentReaderActivity::class.java)
-            intent.putExtra("path", selectFile.path)
-            context.startActivity(intent)
+            val fileExtension = getFileExtension(selectedFilePath)
+            saveSelectedFilePathAndPerformAction(selectedFilePath, fileExtension)
         }
     }
 
-    private fun saveSelectedFilePathAndPerformAction(selectedFilePath: String) {
+    private fun saveSelectedFilePathAndPerformAction(selectedFilePath: String, fileExtension: String) {
         val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = sharedPreferences.edit()
-        editor.putString("selected_file_path", selectedFilePath)
-        editor.apply()
 
-        // Thực hiện các tác vụ khác ở đây, ví dụ: hiển thị Toast
-        Toast.makeText(context, "Đã lưu đường dẫn: $selectedFilePath", Toast.LENGTH_SHORT).show()
+        // Thực hiện hành động dựa trên phần mở rộng của tệp
+        when (fileExtension.toLowerCase()) {
+            "pdf" -> {
+                editor.putString("selected_file_path_pdf", selectedFilePath)
+                editor.apply()
+                val intent = Intent(context, DocumentReaderActivity::class.java)
+                intent.putExtra("path", selectedFilePath)
+                context.startActivity(intent)
+            }
+            "docx" -> {
+                editor.putString("selected_file_path_word", selectedFilePath)
+                editor.apply()
+                val intent = Intent(context, DocumentReaderActivity::class.java)
+                intent.putExtra("path", selectedFilePath)
+                context.startActivity(intent)
+            }
+            "xlsx" -> {
+                editor.putString("selected_file_path_excel", selectedFilePath)
+                editor.apply()
+                val intent = Intent(context, DocumentReaderActivity::class.java)
+                intent.putExtra("path", selectedFilePath)
+                context.startActivity(intent)
+            }
+            "pptx" -> {
+                editor.putString("selected_file_path_ppt", selectedFilePath)
+                editor.apply()
+                val intent = Intent(context, DocumentReaderActivity::class.java)
+                intent.putExtra("path", selectedFilePath)
+                context.startActivity(intent)
+            }
+            else -> {
+                Toast.makeText(context, "Can't read file", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
+
+    private fun getFileExtension(filePath: String): String {
+        val lastDotIndex = filePath.lastIndexOf(".")
+        if (lastDotIndex != -1) {
+            return filePath.substring(lastDotIndex + 1).toLowerCase()
+        }
+        return ""
+    }
+
 
 
     override fun getItemCount(): Int {

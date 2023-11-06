@@ -7,6 +7,7 @@ import android.content.ClipData
 import android.content.Intent
 import android.database.Cursor
 import android.graphics.BitmapFactory
+import android.graphics.RectF
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.os.Bundle
@@ -33,6 +34,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.Float.min
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -79,7 +81,7 @@ class ConvertPdfActivity : AppCompatActivity() {
                             .show()
                     }
                     R.id.camera ->{
-                        dispatchTakePictureIntent()
+//                        dispatchTakePictureIntent()
                         Toast.makeText(this@ConvertPdfActivity, "" + item.title, Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -176,21 +178,31 @@ class ConvertPdfActivity : AppCompatActivity() {
 
     private fun convertImagesToPdf(images: List<String>) {
         val pdfDocument = PdfDocument()
-        val pageSize = PdfDocument.PageInfo.Builder(1190, 1684, 2).create() // A4 page size
+        val pdfDirectory = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+        val pdfFileNameBase = "converted_images"
+        val pdfExtension = "pdf"
+        val pageSize = PdfDocument.PageInfo.Builder(595, 842, 1).create() // A4 page size
 
         for ((index, imagePath) in images.withIndex()) {
             val bitmap = BitmapFactory.decodeFile(imagePath)
-            val page = pdfDocument.startPage(pageSize)
+
+            // Tính toán tỷ lệ giữa kích thước trang PDF và hình ảnh
+            val pageWidth = pageSize.pageWidth
+            val pageHeight = pageSize.pageHeight
+            val imageWidth = bitmap.width
+            val imageHeight = bitmap.height
+
+            val scale = min(pageWidth.toFloat() / imageWidth, pageHeight.toFloat() / imageHeight)
+
+            // Tạo PageInfo với kích thước trang phù hợp
+            val pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, index + 1).create()
+            val page = pdfDocument.startPage(pageInfo)
             val canvas = page.canvas
-            val scale = pageSize.pageWidth / bitmap.width.toFloat()
-            canvas.drawBitmap(bitmap, 0f, 0f, null)
+            canvas.drawBitmap(bitmap, null, RectF(0f, 0f, pageWidth.toFloat(), pageHeight.toFloat()), null)
             pdfDocument.finishPage(page)
             bitmap.recycle()
         }
 
-        val pdfDirectory = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-        val pdfFileNameBase = "converted_images"
-        val pdfExtension = "pdf"
         var pdfFileName = "$pdfFileNameBase.$pdfExtension"
 
         var counter = 1
