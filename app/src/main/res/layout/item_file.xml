@@ -17,6 +17,7 @@
     <LinearLayout
         android:id="@+id/detailFile"
         android:layout_toRightOf="@+id/image_file"
+        android:layout_toLeftOf="@+id/actionFile"
         android:layout_marginLeft="@dimen/_6sdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,14 +25,14 @@
         android:orientation="vertical">
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/tv_name_file"
             android:text="File name"
             android:textSize="17sp"
             android:textColor="@color/black"
-            android:maxLength="21"
-            android:maxLines="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:singleLine="true"
+            />
         <LinearLayout
             android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
@@ -56,6 +57,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/actionFile"
         android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
