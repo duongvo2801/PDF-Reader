@@ -3,18 +3,26 @@ package com.example.pdfreader
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.pdfreader.activities.ChangeLanguageActivity
 import com.example.pdfreader.activities.ConvertPdfActivity
+import com.example.pdfreader.activities.ExcelActivity
 import com.example.pdfreader.activities.PremiumActivity
 import com.example.pdfreader.activities.SearchActivity
 import com.example.pdfreader.adapters.FileAdapter
@@ -27,36 +35,62 @@ import com.example.pptreader.fragments.ExcelFragment
 import com.example.pptreader.fragments.PptFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
 
 class MainActivity : AppCompatActivity() {
+    //
+    private val pdfFragment = PdfFragment()
+    private val wordFragment = WordFragment()
+    private val excelFragment = ExcelFragment()
+    private val pptFragment = PptFragment()
+
     private lateinit var binding: ActivityMainBinding
     private var doubleClickToExit: Long = 0
 
     lateinit var addFAB: FloatingActionButton
     lateinit var imageToPdfFAB: FloatingActionButton
     lateinit var scanFAB: FloatingActionButton
+    lateinit var toolBar: LinearLayout
     private lateinit var adapter: FileAdapter
     var fabVisible = false
 
-    //
     private var currentNavItem = R.id.documentation
 
 
-    private val pdfFragment by lazy { PdfFragment() }
-    private val wordFragment by lazy { WordFragment() }
-    private val excelFragment by lazy { ExcelFragment() }
-    private val pptFragment by lazy { PptFragment() }
     private val pagerAdapter by lazy {
         ViewPagerAdapter(supportFragmentManager, lifecycle).apply {
             this.addFragments(pdfFragment, wordFragment, excelFragment, pptFragment)
         }
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        toolBar = findViewById(R.id.toolbar)
+        clickToolbar()
+
+
+        adapter = FileAdapter(ArrayList(), this)
+
+        if (ContextCompat.checkSelfPermission(this, manageExternalStoragePermission) == PackageManager.PERMISSION_GRANTED) {
+
+            Toast.makeText(this@MainActivity, "Quyền truy cập tệp đã được cấp", Toast.LENGTH_SHORT).show()
+        } else {
+            // Yêu cầu quyền
+            requestPermission()
+        }
+
+
+        setupTablayout()
+        setupViewPager()
+        setupBottomNavigition()
+
+        setFAB()
+
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -67,39 +101,11 @@ class MainActivity : AppCompatActivity() {
         Log.e("DEBUG", lang)
         Languages.loadLocale(this)
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        val toolBar = findViewById<LinearLayout>(R.id.toolbar)
-        clickToolbar()
-
-
-        adapter = FileAdapter(ArrayList(), this)
-
-        checkPermission()
-        setFAB()
-
-
+    private fun setupTablayout() {
         binding.tabLayoutView.addTab(binding.tabLayoutView.newTab().setText("PDF"))
         binding.tabLayoutView.addTab(binding.tabLayoutView.newTab().setText("WORD"))
         binding.tabLayoutView.addTab(binding.tabLayoutView.newTab().setText("EXCEL"))
         binding.tabLayoutView.addTab(binding.tabLayoutView.newTab().setText("PPT"))
-
-
-
-        toolBar.setBackgroundColor(Color.parseColor("#b30b00"))
-        binding.tabLayoutView.setBackgroundColor(Color.parseColor("#b30b00"))
-        window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.pdf)
-
-        binding.viewpage.apply {
-            adapter = pagerAdapter
-            offscreenPageLimit = pagerAdapter.itemCount
-        }
-
 
         binding.tabLayoutView.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -127,7 +133,7 @@ class MainActivity : AppCompatActivity() {
                                 0 -> pdfFragment.loadPdfFileByPath()
                                 1 -> wordFragment.loadPdfFileByPath()
                                 2 -> excelFragment.loadPdfFileByPath()
-                                2 -> pptFragment.loadPdfFileByPath()
+                                3 -> pptFragment.loadPdfFileByPath()
                             }
                         }
                     }
@@ -171,6 +177,16 @@ class MainActivity : AppCompatActivity() {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
+    }
+    private fun setupViewPager() {
+        binding.viewpage.apply {
+            adapter = pagerAdapter
+            offscreenPageLimit = pagerAdapter.itemCount
+        }
+    }
+
+
+    private fun setupBottomNavigition() {
         binding.navigationmenu.setOnItemSelectedListener {item ->
             currentNavItem = item.itemId
             when(item.itemId){
@@ -205,42 +221,61 @@ class MainActivity : AppCompatActivity() {
                 else -> true
             }
         }
+    }
 
-        
+    private val manageExternalStoragePermission = Manifest.permission.MANAGE_EXTERNAL_STORAGE
 
-        imageToPdfFAB.setOnClickListener {
-            startActivity(Intent(this, ConvertPdfActivity::class.java))
+    private val requestPermissionLauncher: ActivityResultLauncher<String> = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            // Quyền đã được cấp, thực hiện công việc của bạn ở đây
+            Toast.makeText(this@MainActivity, "Quyền truy cập tệp đã được cấp", Toast.LENGTH_SHORT).show()
+        } else {
+            // Quyền bị từ chối, hiển thị hộp thoại cài đặt
+            showPermissionDeniedDialog()
         }
-        scanFAB.setOnClickListener {
-            startActivity(Intent(this, ConvertPdfActivity::class.java))
+    }
+    private fun requestPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, manageExternalStoragePermission)) {
+            // Hiển thị thông báo giải thích
+            showPermissionRationale()
+        } else {
+            // Yêu cầu quyền
+            requestPermissionLauncher.launch(manageExternalStoragePermission)
         }
     }
 
-    fun checkPermission() {
-        Dexter.withContext(this)
-            .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-            .withListener(object : PermissionListener {
-                override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                    // Permission granted, you can now proceed to set up your RecyclerView
+    private fun showPermissionRationale() {
+        AlertDialog.Builder(this)
+            .setMessage("Ứng dụng cần quyền truy cập tất cả các tệp để hoạt động.")
+            .setCancelable(false)
+            .setPositiveButton("Đồng ý") { _, _ ->
+                // Yêu cầu quyền
+                requestPermissionLauncher.launch(manageExternalStoragePermission)
+            }
+            .show()
+    }
 
-                }
-
-                override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                    // Handle permission denied, for example, show a message or request again
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    permission: PermissionRequest?,
-                    token: PermissionToken?
-                ) {
-                    // Optionally show a rationale to the user before the permission request
-                    token?.continuePermissionRequest()
-                }
-            })
-            .check()
+    private fun showPermissionDeniedDialog() {
+        AlertDialog.Builder(this)
+            .setMessage("Quyền truy cập tệp bị từ chối.")
+            .setCancelable(true)
+            .setPositiveButton("Cài đặt") { _, _ ->
+                // Mở màn hình cài đặt ứng dụng để cấp quyền
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val uri = Uri.fromParts("package", packageName, null)
+                intent.data = uri
+                startActivity(intent)
+            }
+            .show()
     }
 
     private fun clickToolbar() {
+        toolBar.setBackgroundColor(Color.parseColor("#b30b00"))
+        binding.tabLayoutView.setBackgroundColor(Color.parseColor("#b30b00"))
+        window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.pdf)
+
         val getPremium = findViewById<ImageView>(R.id.get_premium)
         val changeLanguage = findViewById<ImageView>(R.id.change_language)
         val search = findViewById<ImageView>(R.id.search)
@@ -261,11 +296,15 @@ class MainActivity : AppCompatActivity() {
             popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.toolbarName -> {
-
+                        startActivity(Intent(this, ExcelActivity::class.java))
                         Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
                     }
-
-                    // ...
+                    R.id.toolbarEdit -> {
+                        Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
+                    }
+                    R.id.toolbarSize -> {
+                        Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
+                    }
 
                 }
                 true
@@ -301,10 +340,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         imageToPdfFAB.setOnClickListener {
+            startActivity(Intent(this, ConvertPdfActivity::class.java))
             Toast.makeText(this@MainActivity, getString(R.string.image_to_pdf), Toast.LENGTH_LONG).show()
         }
 
         scanFAB.setOnClickListener {
+            startActivity(Intent(this, ConvertPdfActivity::class.java))
             Toast.makeText(this@MainActivity, getString(R.string.scan_document), Toast.LENGTH_LONG).show()
         }
     }

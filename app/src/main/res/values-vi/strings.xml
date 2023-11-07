@@ -42,4 +42,8 @@
     <string name="change_name_pdf">Đổi tên PDF</string>
     <string name="enter_pdf_name">Nhập tên PDF</string>
     <string name="double_click_to_exit">Nhấn 1 lần nữa để thoát</string>
+    <string name="please_permissions">Vui lòng cấp các quyền cần thiết</string>
+    <string name="setting">Cài đặt</string>
+    <string name="file_created_successfully">Tạo file thành công</string>
+    <string name="failed">Lỗi</string>
 </resources>

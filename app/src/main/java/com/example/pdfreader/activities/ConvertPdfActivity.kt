@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
@@ -42,94 +43,114 @@ import java.util.Locale
 class ConvertPdfActivity : AppCompatActivity() {
 
     private lateinit var pdfDocument: PdfDocument
-    lateinit var dexter : DexterBuilder
+    lateinit var dexter: DexterBuilder
     private val images = ArrayList<String>()
     private lateinit var recyclerView: RecyclerView
     private lateinit var imageAdapter: ImageAdapter
-    private var capturedImageUri: Uri? = null
 
-    companion object {
-        private const val PICK_IMAGES_REQUEST = 100
-        private const val CAMERA_PERMISSION_REQUEST = 101
-    }
+    //
+//    private lateinit var camera: Camera
+    private lateinit var currentPhotoPath: String
+
+
+    private val PICK_IMAGES_REQUEST = 100
+    private val CAMERA_PERMISSION_REQUEST = 101
+    private val REQUEST_IMAGE_CAPTURE = 1
+
 
     @SuppressLint("MissingInflatedId", "WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_convert_pdf)
 
-        //
         recyclerView = findViewById(R.id.recyclerView)
         val layoutManager = GridLayoutManager(this, 2)
         recyclerView.layoutManager = layoutManager
 
         imageAdapter = ImageAdapter(images)
         recyclerView.adapter = imageAdapter
+        pdfDocument = PdfDocument()
+
 
         getPermission()
         goBackHome()
+        popupMenu()
+        convertPdf()
 
-        val botton = findViewById<ImageView>(R.id.ivSelectImage)
-        botton.setOnClickListener {
-            val popupMenu: PopupMenu = PopupMenu(this, botton)
+    }
+
+    private fun convertPdf() {
+        val buttonConvertPdf = findViewById<Button>(R.id.buttonConvertPdf)
+        buttonConvertPdf.setOnClickListener {
+            convertImagesToPdf(images)
+        }
+    }
+
+    private fun popupMenu() {
+        val buttonSelectImage = findViewById<ImageView>(R.id.ivSelectImage)
+        buttonSelectImage.setOnClickListener {
+            val popupMenu: PopupMenu = PopupMenu(this, buttonSelectImage)
             popupMenu.menuInflater.inflate(R.menu.popup_convert, popupMenu.menu)
             popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.gallery -> {
                         pickImagesFromGallery()
-                        Toast.makeText(this@ConvertPdfActivity, "" + item.title, Toast.LENGTH_SHORT)
-                            .show()
                     }
-                    R.id.camera ->{
-//                        dispatchTakePictureIntent()
-                        Toast.makeText(this@ConvertPdfActivity, "" + item.title, Toast.LENGTH_SHORT).show()
+                    R.id.camera -> {
+                        dispatchTakePictureIntent()
                     }
                 }
                 true
             })
             popupMenu.show()
         }
-
-        //
-        pdfDocument = PdfDocument()
-
-
-        // button convert
-        val buttonConvertPdf = findViewById<Button>(R.id.buttonConvertPdf)
-        buttonConvertPdf.setOnClickListener {
-            convertImagesToPdf(images)
-        }
-
-
     }
 
-    // camera
-    private fun dispatchTakePictureIntent() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (takePictureIntent.resolveActivity(packageManager) != null) {
-            val photoFile: File? = createImageFile()
-            if (photoFile != null) {
-                capturedImageUri = FileProvider.getUriForFile(this, "com.example.pdfreader.fileprovider", photoFile)
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, capturedImageUri)
-                startActivityForResult(takePictureIntent, CAMERA_PERMISSION_REQUEST)
-            }
-        }
-    }
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val imageFileName = "JPEG_$timeStamp.jpg"
-        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(imageFileName, ".jpg", storageDir)
-    }
-
-    // gallery
     private fun pickImagesFromGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.type = "image/*"
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         startActivityForResult(intent, PICK_IMAGES_REQUEST)
     }
+
+    //camera
+    private fun dispatchTakePictureIntent() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                val photoFile: File? = try {
+                    createImageFile()
+                } catch (ex: IOException) {
+                    null
+                }
+                photoFile?.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                        this,
+                        "your.package.name.fileprovider",
+                        it
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                }
+            }
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        val imageFileName = "JPEG_" + SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date()
+        )
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val image = File.createTempFile(
+            imageFileName,
+            ".jpg",
+            storageDir
+        )
+        currentPhotoPath = image.absolutePath
+        return image
+    }
+
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -138,8 +159,8 @@ class ConvertPdfActivity : AppCompatActivity() {
                 val imageUris = ArrayList<String>()
 
                 if (data.data != null) {
-                    // Trường hợp chọn một ảnh
                     val selectedImageUri: Uri = data.data!!
+
                     imageUris.add(getRealPathFromURI(selectedImageUri))
                 } else {
                     val clipData: ClipData? = data.clipData
@@ -155,16 +176,12 @@ class ConvertPdfActivity : AppCompatActivity() {
                 imageAdapter.notifyDataSetChanged()
             }
         }
-
-        // camera
-        if (requestCode == PICK_IMAGES_REQUEST && resultCode == Activity.RESULT_OK) {
-            if (capturedImageUri != null) {
-                images.add(capturedImageUri.toString())
-                imageAdapter.notifyDataSetChanged()
-            }
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            images.add(currentPhotoPath)
+            imageAdapter.notifyDataSetChanged()
         }
-
     }
+
     private fun getRealPathFromURI(uri: Uri): String {
         val projection = arrayOf(MediaStore.Images.Media.DATA)
         val cursor: Cursor? = contentResolver.query(uri, projection, null, null, null)
@@ -173,20 +190,24 @@ class ConvertPdfActivity : AppCompatActivity() {
         val imagePath = cursor?.getString(columnIndex ?: 0)
         cursor?.close()
         return imagePath ?: ""
+        Log.d("qqq", imagePath.toString())
     }
-
 
     private fun convertImagesToPdf(images: List<String>) {
         val pdfDocument = PdfDocument()
-        val pdfDirectory = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+//        val pdfDirectory = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
         val pdfFileNameBase = "converted_images"
         val pdfExtension = "pdf"
-        val pageSize = PdfDocument.PageInfo.Builder(595, 842, 1).create() // A4 page size
+        val pageSize = PdfDocument.PageInfo.Builder(595, 842, 1).create() // Kích thước trang A4
+        val pdfDirectory = File(filesDir, "convert-to-pdf")
+        if (!pdfDirectory.exists()) {
+            pdfDirectory.mkdir()
+        }
+        Log.d("qqq", pdfDirectory.toString())
 
         for ((index, imagePath) in images.withIndex()) {
             val bitmap = BitmapFactory.decodeFile(imagePath)
 
-            // Tính toán tỷ lệ giữa kích thước trang PDF và hình ảnh
             val pageWidth = pageSize.pageWidth
             val pageHeight = pageSize.pageHeight
             val imageWidth = bitmap.width
@@ -194,7 +215,6 @@ class ConvertPdfActivity : AppCompatActivity() {
 
             val scale = min(pageWidth.toFloat() / imageWidth, pageHeight.toFloat() / imageHeight)
 
-            // Tạo PageInfo với kích thước trang phù hợp
             val pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, index + 1).create()
             val page = pdfDocument.startPage(pageInfo)
             val canvas = page.canvas
@@ -217,15 +237,12 @@ class ConvertPdfActivity : AppCompatActivity() {
             pdfDocument.writeTo(fileOutputStream)
             pdfDocument.close()
             fileOutputStream.close()
-            // Display a message or perform any further actions here
-            Toast.makeText(this, "PDF created successfully", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.file_created_successfully), Toast.LENGTH_SHORT).show()
         } catch (e: IOException) {
             e.printStackTrace()
-            Toast.makeText(this, "Error creating PDF", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.failed), Toast.LENGTH_SHORT).show()
         }
     }
-
-
 
     private fun getPermission() {
         dexter = Dexter.withContext(this)
@@ -236,14 +253,13 @@ class ConvertPdfActivity : AppCompatActivity() {
             ).withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport) {
                     report.let {
-
                         if (report.areAllPermissionsGranted()) {
-                            Toast.makeText(this@ConvertPdfActivity, "Permissions Granted", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@ConvertPdfActivity, R.string.permissions_granted, Toast.LENGTH_SHORT).show()
                         } else {
                             AlertDialog.Builder(this@ConvertPdfActivity).apply {
-                                setMessage("please allow the required permissions")
+                                setMessage(getString(R.string.please_permissions))
                                     .setCancelable(false)
-                                    .setPositiveButton("Settings") { _, _ ->
+                                    .setPositiveButton(getString(R.string.setting)) { _, _ ->
                                         val reqIntent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                                             .apply {
                                                 val uri = Uri.fromParts("package", packageName, null)
@@ -251,26 +267,25 @@ class ConvertPdfActivity : AppCompatActivity() {
                                             }
                                         resultLauncher.launch(reqIntent)
                                     }
-                                // setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
                                 val alert = this.create()
                                 alert.show()
                             }
                         }
                     }
                 }
+
                 override fun onPermissionRationaleShouldBeShown(permissions: List<PermissionRequest?>?, token: PermissionToken?) {
                     token?.continuePermissionRequest()
                 }
-            }).withErrorListener{
+            }).withErrorListener {
                 Toast.makeText(this, it.name, Toast.LENGTH_SHORT).show()
             }
         dexter.check()
     }
 
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            result -> dexter.check()
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        dexter.check()
     }
-
 
     private fun goBackHome() {
         val buttonBack = findViewById<ImageView>(R.id.ivHomeBack)
@@ -278,6 +293,4 @@ class ConvertPdfActivity : AppCompatActivity() {
             onBackPressed()
         }
     }
-
-
 }

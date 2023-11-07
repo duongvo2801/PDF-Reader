@@ -4,6 +4,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
+import android.widget.TableLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.pdfreader.R
@@ -19,6 +21,7 @@ import java.io.FileInputStream
 class DocumentReaderActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDocumentReaderBinding
     private lateinit var webView: WebView
+    private lateinit var main_table: TableLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +60,13 @@ class DocumentReaderActivity : AppCompatActivity() {
 
     }
 
+    private fun createTextView(text: String): TextView {
+        val textView = TextView(this)
+        textView.text = text
+        textView.setPadding(8, 8, 8, 8)
+        return textView
+    }
+
     private fun readExcelFile(file: File) {
         // show file excel Word
         webView.visibility = View.VISIBLE
@@ -84,6 +94,7 @@ class DocumentReaderActivity : AppCompatActivity() {
                     }
                     htmlContent.append(cellValue).append(" | ")
                 }
+
 
                 htmlContent.append("</p>")
             }
@@ -139,10 +150,6 @@ class DocumentReaderActivity : AppCompatActivity() {
             Toast.makeText(this, "Can't read file", Toast.LENGTH_SHORT).show()
         }
     }
-
-
-
-
 
 
 

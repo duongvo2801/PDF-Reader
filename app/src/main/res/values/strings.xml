@@ -53,6 +53,10 @@
     <string name="change_name_pdf">Rename PDF</string>
     <string name="enter_pdf_name">Enter PDF Name</string>
     <string name="double_click_to_exit">Press once again to exit!</string>
+    <string name="please_permissions">Please grant the necessary permissions</string>
+    <string name="setting">Setting</string>
+    <string name="file_created_successfully">File created successfully</string>
+    <string name="failed">Failed</string>
 
 
 </resources>

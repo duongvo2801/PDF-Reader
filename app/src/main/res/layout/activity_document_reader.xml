@@ -19,4 +19,18 @@
         android:layout_height="match_parent"
         android:visibility="gone"/>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:fillViewport="false">
+
+        <TableLayout
+            android:id="@+id/main_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*" />
+
+    </ScrollView>
+
 </RelativeLayout>
