@@ -60,7 +60,6 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
         val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = sharedPreferences.edit()
 
-        // Thực hiện hành động dựa trên phần mở rộng của tệp
         when (fileExtension.toLowerCase()) {
             "pdf" -> {
                 editor.putString("selected_file_path_pdf", selectedFilePath)
@@ -91,7 +90,7 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
                 context.startActivity(intent)
             }
             else -> {
-                Toast.makeText(context, "Can't read file", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.can_not_read_file, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -189,11 +188,11 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
 
 
         private fun copyFile(fileItem: FileItem) {
-            // file source
             val sourceFile = File(fileItem.path)
 
             if (!sourceFile.exists()) {
-                Toast.makeText(context, "Source file does not exist", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,
+                    context.getString(R.string.source_file_does_not_exist), Toast.LENGTH_SHORT).show()
                 return
             }
 
@@ -215,13 +214,16 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
                     sourceChannel.close()
                     destinationChannel.close()
 
-                    Toast.makeText(context, "File copied successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.file_copied_successfully), Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Toast.makeText(context, "Failed to copy the file", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.file_copy_failed), Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(context, "Source and destination are the same", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,
+                    context.getString(R.string.file_source_already_exists), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -239,16 +241,18 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
                 val emailIntent = Intent(Intent.ACTION_SEND)
                 emailIntent.type = "application/pdf"
                 emailIntent.putExtra(Intent.EXTRA_STREAM, uri)
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject")
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Email body")
+//                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject")
+//                emailIntent.putExtra(Intent.EXTRA_TEXT, "Email body")
 
                 try {
                     context.startActivity(Intent.createChooser(emailIntent, "Send email..."))
                 } catch (e: ActivityNotFoundException) {
-                    Toast.makeText(context, "No email app found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.no_email_app), Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(context, "File does not exist", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,
+                    context.getString(R.string.file_does_not_exist), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -272,13 +276,16 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
                     val newFile = File(oldFile.parentFile, newFileName)
 
                     if (oldFile.renameTo(newFile)) {
-                        Toast.makeText(context, "Rename successful", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context,
+                            context.getString(R.string.rename_successful), Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
                     } else {
-                        Toast.makeText(context, "Can't rename file", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context,
+                            context.getString(R.string.can_t_rename_file), Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(context, "Please enter new name", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,
+                        context.getString(R.string.please_enter_new_name), Toast.LENGTH_SHORT).show()
                 }
             }
             dialog.show()
@@ -287,23 +294,25 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
 
         private fun deleteFile(fileItem: FileItem) {
             val builder = AlertDialog.Builder(context)
-            builder.setTitle("Delete file")
-            builder.setMessage("Are you sure you want to delete this file?")
+            builder.setTitle(context.getString(R.string.delete_file))
+            builder.setMessage(context.getString(R.string.sure_delete_this_file))
 
-            builder.setPositiveButton("Yes") { _, _ ->
+            builder.setPositiveButton(R.string.yes) { _, _ ->
                 val file = File(fileItem.path)
                 if (file.exists()) {
                     if (file.delete()) {
-                        Toast.makeText(context, "File deleted", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context,
+                            context.getString(R.string.file_deleted), Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(context, "Failed to delete the file", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context,
+                            context.getString(R.string.failed_delete_file), Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(context, "File does not exist", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.file_does_not_exist), Toast.LENGTH_SHORT).show()
                 }
             }
 
-            builder.setNegativeButton("No") { _, _ ->
+            builder.setNegativeButton(R.string.cancel) { _, _ ->
                 //
             }
 

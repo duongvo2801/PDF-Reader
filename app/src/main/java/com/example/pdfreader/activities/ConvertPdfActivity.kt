@@ -82,7 +82,11 @@ class ConvertPdfActivity : AppCompatActivity() {
     private fun convertPdf() {
         val buttonConvertPdf = findViewById<Button>(R.id.buttonConvertPdf)
         buttonConvertPdf.setOnClickListener {
-            convertImagesToPdf(images)
+            if (images.isEmpty()) {
+                Toast.makeText(this, getString(R.string.please_select_photo), Toast.LENGTH_SHORT).show()
+            } else {
+                convertImagesToPdf(images)
+            }
         }
     }
 

@@ -76,9 +76,8 @@ class MainActivity : AppCompatActivity() {
 
         if (ContextCompat.checkSelfPermission(this, manageExternalStoragePermission) == PackageManager.PERMISSION_GRANTED) {
 
-            Toast.makeText(this@MainActivity, "Quyền truy cập tệp đã được cấp", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MainActivity, getString(R.string.access_granted), Toast.LENGTH_SHORT).show()
         } else {
-            // Yêu cầu quyền
             requestPermission()
         }
 
@@ -185,7 +184,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun setupBottomNavigition() {
         binding.navigationmenu.setOnItemSelectedListener {item ->
             currentNavItem = item.itemId
@@ -229,19 +227,15 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            // Quyền đã được cấp, thực hiện công việc của bạn ở đây
-            Toast.makeText(this@MainActivity, "Quyền truy cập tệp đã được cấp", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MainActivity, getString(R.string.access_granted), Toast.LENGTH_SHORT).show()
         } else {
-            // Quyền bị từ chối, hiển thị hộp thoại cài đặt
             showPermissionDeniedDialog()
         }
     }
     private fun requestPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, manageExternalStoragePermission)) {
-            // Hiển thị thông báo giải thích
             showPermissionRationale()
         } else {
-            // Yêu cầu quyền
             requestPermissionLauncher.launch(manageExternalStoragePermission)
         }
     }
@@ -250,7 +244,7 @@ class MainActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setMessage("Ứng dụng cần quyền truy cập tất cả các tệp để hoạt động.")
             .setCancelable(false)
-            .setPositiveButton("Đồng ý") { _, _ ->
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
                 // Yêu cầu quyền
                 requestPermissionLauncher.launch(manageExternalStoragePermission)
             }
@@ -259,14 +253,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun showPermissionDeniedDialog() {
         AlertDialog.Builder(this)
-            .setMessage("Quyền truy cập tệp bị từ chối.")
-            .setCancelable(true)
-            .setPositiveButton("Cài đặt") { _, _ ->
+            .setTitle(getString(R.string.grant_access))
+            .setMessage(getString(R.string.file_access_denied))
+            .setCancelable(false)
+            .setPositiveButton(R.string.setting) { _, _ ->
                 // Mở màn hình cài đặt ứng dụng để cấp quyền
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 val uri = Uri.fromParts("package", packageName, null)
                 intent.data = uri
                 startActivity(intent)
+            }
+            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
+
             }
             .show()
     }

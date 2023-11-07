@@ -68,43 +68,50 @@ class DocumentReaderActivity : AppCompatActivity() {
     }
 
     private fun readExcelFile(file: File) {
-        // show file excel Word
-        webView.visibility = View.VISIBLE
-        binding.pdfview.visibility = View.GONE
 
-        val fileInputStream = FileInputStream(file)
-        val workbook = WorkbookFactory.create(fileInputStream)
+        try {
+            // show file excel Word
+            webView.visibility = View.VISIBLE
+            binding.pdfview.visibility = View.GONE
 
-        val numberOfSheets = workbook.numberOfSheets
-        val htmlContent = StringBuilder("<html><body>")
+            val fileInputStream = FileInputStream(file)
+            val workbook = WorkbookFactory.create(fileInputStream)
 
-        for (i in 0 until numberOfSheets) {
-            val sheet = workbook.getSheetAt(i)
-            val sheetName = sheet.sheetName
-            htmlContent.append("<h2>$sheetName</h2>")
+            val numberOfSheets = workbook.numberOfSheets
+            val htmlContent = StringBuilder("<html><body>")
 
-            for (row in sheet) {
-                htmlContent.append("<p>")
+            for (i in 0 until numberOfSheets) {
+                val sheet = workbook.getSheetAt(i)
+                val sheetName = sheet.sheetName
+                htmlContent.append("<h2>$sheetName</h2>")
 
-                for (cell in row) {
-                    val cellValue = when (cell.cellType) {
-                        org.apache.poi.ss.usermodel.CellType.STRING -> cell.stringCellValue
-                        org.apache.poi.ss.usermodel.CellType.NUMERIC -> cell.numericCellValue.toString()
-                        else -> ""
+                for (row in sheet) {
+                    htmlContent.append("<p>")
+
+                    for (cell in row) {
+                        val cellValue = when (cell.cellType) {
+                            org.apache.poi.ss.usermodel.CellType.STRING -> cell.stringCellValue
+                            org.apache.poi.ss.usermodel.CellType.NUMERIC -> cell.numericCellValue.toString()
+                            else -> ""
+                        }
+                        htmlContent.append(cellValue).append(" | ")
                     }
-                    htmlContent.append(cellValue).append(" | ")
+
+
+                    htmlContent.append("</p>")
                 }
-
-
-                htmlContent.append("</p>")
             }
+
+            fileInputStream.close()
+
+            htmlContent.append("</body></html>")
+
+            webView.loadDataWithBaseURL(null, htmlContent.toString(), "text/html", "UTF-8", null)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, getString(R.string.can_not_read_file), Toast.LENGTH_SHORT).show()
         }
-
-        fileInputStream.close()
-
-        htmlContent.append("</body></html>")
-
-        webView.loadDataWithBaseURL(null, htmlContent.toString(), "text/html", "UTF-8", null)
 
     }
 
@@ -116,12 +123,11 @@ class DocumentReaderActivity : AppCompatActivity() {
 
             for (paragraph in document.paragraphs) {
                 if (paragraph.styleID == "Heading1") {
-                    // Đây là một ví dụ về cách sử dụng thẻ HTML để in đậm tiêu đề và căn giữa
                     content.append("<strong>${paragraph.text}</strong>")
                 } else {
                     content.append(paragraph.text)
                 }
-                content.append("<br>") // Thêm thẻ <br> để xuống dòng
+                content.append("<br>")
             }
 
             // Đọc hình ảnh từ tài liệu Word và chuyển chúng thành HTML
@@ -136,18 +142,16 @@ class DocumentReaderActivity : AppCompatActivity() {
 
             fis.close()
 
-            // show file pdf Word
             binding.pdfview.visibility = View.GONE
             binding.webView.visibility = View.VISIBLE
 
-            // Hiển thị nội dung Word trong WebView
             val webSettings = binding.webView.settings
-            webSettings.javaScriptEnabled = true // Kích hoạt JavaScript nếu cần
+            webSettings.javaScriptEnabled = true
             val htmlContent = "<html><body>${content.toString()}</body></html>"
             binding.webView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(this, "Can't read file", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.can_not_read_file), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -155,7 +159,6 @@ class DocumentReaderActivity : AppCompatActivity() {
 
     private fun readPowerPointFile(file: File) {
         try {
-            // show file excel Word
             webView.visibility = View.VISIBLE
             binding.pdfview.visibility = View.GONE
 
@@ -169,19 +172,18 @@ class DocumentReaderActivity : AppCompatActivity() {
                         content.append(shape.text)
                     }
                 }
-                content.append("<br>") // Thêm thẻ <br> để xuống dòng sau mỗi slide
+                content.append("<br>")
             }
 
             fis.close()
 
-            // Hiển thị nội dung PowerPoint trong WebView
             val webSettings = binding.webView.settings
-            webSettings.javaScriptEnabled = true // Kích hoạt JavaScript nếu cần
+            webSettings.javaScriptEnabled = true //
             val htmlContent = "<html><body>${content.toString()}</body></html>"
             binding.webView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(this, "Không thể đọc tệp PowerPoint", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.can_not_read_file), Toast.LENGTH_SHORT).show()
         }
     }
 

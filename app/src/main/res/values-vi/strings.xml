@@ -46,4 +46,24 @@
     <string name="setting">Cài đặt</string>
     <string name="file_created_successfully">Tạo file thành công</string>
     <string name="failed">Lỗi</string>
+    <string name="please_select_photo">Vui lòng chọn ảnh</string>
+    <string name="access_granted">Quyền truy cập đã được cấp</string>
+    <string name="yes">Đồng ý</string>
+    <string name="cancel">Hủy</string>
+    <string name="file_access_denied">Quyền truy cập tệp bị từ chối</string>
+    <string name="grant_access">Cấp quyền truy cập</string>
+    <string name="can_not_read_file">Không thể đọc file</string>
+    <string name="source_file_does_not_exist">Nguồn tệp không tồn tại</string>
+    <string name="file_copied_successfully">Sao chép tệp thành công</string>
+    <string name="file_copy_failed">Sao chép tệp thất bại</string>
+    <string name="file_source_already_exists">Nguồn tệp đã tồn tại</string>
+    <string name="no_email_app">Không tìm thấy ứng dụng email nào</string>
+    <string name="file_does_not_exist">Tệp không tồn tại</string>
+    <string name="rename_successful">Đổi tên thành công</string>
+    <string name="can_t_rename_file">Không thể đổi tên tệp</string>
+    <string name="please_enter_new_name">Vui lòng nhập tên mới</string>
+    <string name="delete_file">Xóa tệp</string>
+    <string name="sure_delete_this_file">Bạn có chắc chắn muốn xóa tệp này không?</string>
+    <string name="file_deleted">Tệp đã được xóa</string>
+    <string name="failed_delete_file">Xóa tệp thất bại</string>
 </resources>

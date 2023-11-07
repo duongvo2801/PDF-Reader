@@ -101,10 +101,10 @@ class FileDBSQLite(context : Context) : SQLiteOpenHelper(context, DBNAME, null, 
 //        return (Integer.parseInt("$_success") != -1)
 
         if (_success > 0) {
-            Log.d("FileDBSQLite", "Đã xóa tệp có đường dẫn: $path và loại: $type")
+            Log.d("FileDBSQLite", "Deleted file with path: $path and type: $type")
             return true
         } else {
-            Log.e("FileDBSQLite", "Không thể xóa tệp có đường dẫn: $path và loại: $type")
+            Log.e("FileDBSQLite", "Can't delete files with path: $path and type: $type")
             return false
         }
     }
