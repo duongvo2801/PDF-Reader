@@ -32,14 +32,12 @@ class ExcelFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Now you can safely access views using binding
-        loadAllFileExcel()
+        binding.rcyExcelFile.layoutManager = LinearLayoutManager(context)
 
     }
 
 
-    fun loadAllFileExcel() {
-        binding.rcyExcelFile.layoutManager = LinearLayoutManager(context)
+    fun loadAllFile() {
         val fileHelper = LoadFileFromDevice(requireContext())
         val extensions = listOf("xlsx")
 
@@ -81,7 +79,6 @@ class ExcelFragment : Fragment() {
 
 
     fun loadFavoriteFileExcel() {
-        binding.rcyExcelFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
 
         val fileType = "excel"

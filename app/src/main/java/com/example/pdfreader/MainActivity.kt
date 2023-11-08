@@ -22,7 +22,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.pdfreader.activities.ChangeLanguageActivity
 import com.example.pdfreader.activities.ConvertPdfActivity
-import com.example.pdfreader.activities.ExcelActivity
 import com.example.pdfreader.activities.PremiumActivity
 import com.example.pdfreader.activities.SearchActivity
 import com.example.pdfreader.adapters.FileAdapter
@@ -101,10 +100,11 @@ class MainActivity : AppCompatActivity() {
         Languages.loadLocale(this)
     }
     private fun setupTablayout() {
-        binding.tabLayoutView.addTab(binding.tabLayoutView.newTab().setText("PDF"))
-        binding.tabLayoutView.addTab(binding.tabLayoutView.newTab().setText("WORD"))
-        binding.tabLayoutView.addTab(binding.tabLayoutView.newTab().setText("EXCEL"))
-        binding.tabLayoutView.addTab(binding.tabLayoutView.newTab().setText("PPT"))
+        val tabTitles = listOf("PDF", "WORD", "EXCEL", "PPT")
+
+        for (title in tabTitles) {
+            binding.tabLayoutView.addTab(binding.tabLayoutView.newTab().setText(title))
+        }
 
         binding.tabLayoutView.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -113,10 +113,10 @@ class MainActivity : AppCompatActivity() {
                     when (currentNavItem) {
                         R.id.documentation -> {
                             when (it) {
-                                0 -> pdfFragment.loadAllFilePDF()
-                                1 -> wordFragment.loadAllFileWord()
-                                2 -> excelFragment.loadAllFileExcel()
-                                3 -> pptFragment.loadAllFilePPT()
+                                0 -> pdfFragment.loadAllFile()
+                                1 -> wordFragment.loadAllFile()
+                                2 -> excelFragment.loadAllFile()
+                                3 -> pptFragment.loadAllFile()
                             }
                         }
                         R.id.favor -> {
@@ -137,36 +137,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-
-                    when(it) {
-                        0 -> {
-                            toolBar.setBackgroundColor(Color.parseColor("#b30b00"))
-                            binding.tabLayoutView.setBackgroundColor(Color.parseColor("#b30b00"))
-                            window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.pdf)
-                        }
-                        1 -> {
-                            toolBar.setBackgroundColor(Color.parseColor("#185abd"))
-                            binding.tabLayoutView.setBackgroundColor(Color.parseColor("#185abd"))
-                            window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.word)
-                        }
-                        2 -> {
-                            toolBar.setBackgroundColor(Color.parseColor("#107a40"))
-                            binding.tabLayoutView.setBackgroundColor(Color.parseColor("#107a40"))
-                            window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.excel)
-                        }
-                        3 -> {
-                            toolBar.setBackgroundColor(Color.parseColor("#c43f1d"))
-                            binding.tabLayoutView.setBackgroundColor(Color.parseColor("#c43f1d"))
-                            window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.ppt)
-
-                        }
-                        else -> {
-                            toolBar.setBackgroundColor(Color.parseColor("#b30b00"))
-                            binding.tabLayoutView.setBackgroundColor(Color.parseColor("#b30b00"))
-                            window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.pdf)
-                        }
-
-                    }
+                    updateColorsForTab(it)
                 }
             }
 
@@ -176,6 +147,21 @@ class MainActivity : AppCompatActivity() {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
+    }
+    private fun updateColorsForTab(position: Int) {
+        val colors = when (position) {
+            0 -> Pair("#b30b00", R.color.pdf)
+            1 -> Pair("#185abd", R.color.word)
+            2 -> Pair("#107a40", R.color.excel)
+            3 -> Pair("#c43f1d", R.color.ppt)
+            else -> Pair("#b30b00", R.color.pdf)
+        }
+
+        val (toolbarColor, statusBarColorResId) = colors
+
+        toolBar.setBackgroundColor(Color.parseColor(toolbarColor))
+        binding.tabLayoutView.setBackgroundColor(Color.parseColor(toolbarColor))
+        window.statusBarColor = ContextCompat.getColor(applicationContext, statusBarColorResId)
     }
     private fun setupViewPager() {
         binding.viewpage.apply {
@@ -190,10 +176,10 @@ class MainActivity : AppCompatActivity() {
             when(item.itemId){
                 R.id.documentation -> {
                     when(binding.viewpage.currentItem) {
-                        0 -> pdfFragment.loadAllFilePDF()
-                        1 -> wordFragment.loadAllFileWord()
-                        2 -> excelFragment.loadAllFileExcel()
-                        3 -> pptFragment.loadAllFilePPT()
+                        0 -> pdfFragment.loadAllFile()
+                        1 -> wordFragment.loadAllFile()
+                        2 -> excelFragment.loadAllFile()
+                        3 -> pptFragment.loadAllFile()
                     }
                     true
                 }
@@ -294,7 +280,6 @@ class MainActivity : AppCompatActivity() {
             popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.toolbarName -> {
-                        startActivity(Intent(this, ExcelActivity::class.java))
                         Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
                     }
                     R.id.toolbarEdit -> {

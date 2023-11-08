@@ -34,15 +34,13 @@ class PptFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Now you can safely access views using binding
-        loadAllFilePPT()
+        binding.rcyPptFile.layoutManager = LinearLayoutManager(context)
     }
 
 
 
 
-    fun loadAllFilePPT() {
-        binding.rcyPptFile.layoutManager = LinearLayoutManager(context)
+    fun loadAllFile() {
         val fileHelper = LoadFileFromDevice(requireContext())
         val extensions = listOf("pptx")
 
@@ -83,7 +81,6 @@ class PptFragment : Fragment() {
     }
 
     fun loadFavoriteFilePpt() {
-        binding.rcyPptFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
         val fileType = "ppt"
         val listFileFavorite = dbHelper.getAllFileFavorite(fileType)

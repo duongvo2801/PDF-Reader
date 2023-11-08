@@ -59,16 +59,13 @@ class PdfFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
 
         binding.rcyPdfFile.layoutManager = LinearLayoutManager(context)
-        binding.rcyPdfFile.adapter = adapter // Đặt adapter lên RecyclerView
+        binding.rcyPdfFile.adapter = adapter
 
-        loadAllFilePDF()
+        loadAllFile()
 
     }
 
-
-
-    fun loadAllFilePDF() {
-        binding.rcyPdfFile.layoutManager = LinearLayoutManager(context)
+    fun loadAllFile() {
         val fileHelper = LoadFileFromDevice(requireContext())
         val extensions = listOf("pdf")
 
@@ -112,7 +109,6 @@ class PdfFragment : Fragment(){
 
 
     fun loadFavoriteFilePdf() {
-//        binding.rcyPdfFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
 
         val fileType = "pdf"

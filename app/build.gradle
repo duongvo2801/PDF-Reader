@@ -75,14 +75,17 @@ dependencies {
 
     implementation 'com.itextpdf:itext7-core:7.2.4'
     implementation 'com.itextpdf:html2pdf:3.0.1'
+    implementation 'com.itextpdf:itextpdf:5.5.13.2'
+
+
 
     // read word, excel, powerpoint
     implementation 'org.apache.poi:poi:5.2.3'
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
     implementation 'org.apache.poi:poi-scratchpad:5.2.3'
+    
 
-    //
-    implementation group: 'org.apache.poi', name: 'poi', version: '5.2.0'
+//    implementation group: 'org.apache.poi', name: 'poi', version: '5.2.0'
 
 
 

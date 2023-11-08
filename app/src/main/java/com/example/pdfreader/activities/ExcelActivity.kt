@@ -96,4 +96,51 @@ class ExcelActivity : AppCompatActivity() {
         textView.setPadding(8, 8, 8, 8)
         return textView
     }
+
+//    private fun readExcelFiles(file: File) {
+//        try {
+//            // show file excel Word
+//            webView.visibility = View.VISIBLE
+//            binding.pdfview.visibility = View.GONE
+//
+//            val fileInputStream = FileInputStream(file)
+//            val workbook = WorkbookFactory.create(fileInputStream)
+//
+//            val numberOfSheets = workbook.numberOfSheets
+//            val htmlContent = StringBuilder("<html><body>")
+//
+//            for (i in 0 until numberOfSheets) {
+//                val sheet = workbook.getSheetAt(i)
+//                val sheetName = sheet.sheetName
+//                htmlContent.append("<h2>$sheetName</h2>")
+//
+//                for (row in sheet) {
+//                    htmlContent.append("<p>")
+//
+//                    for (cell in row) {
+//                        val cellValue = when (cell.cellType) {
+//                            org.apache.poi.ss.usermodel.CellType.STRING -> cell.stringCellValue
+//                            org.apache.poi.ss.usermodel.CellType.NUMERIC -> cell.numericCellValue.toString()
+//                            else -> ""
+//                        }
+//                        htmlContent.append(cellValue).append(" | ")
+//                    }
+//
+//
+//                    htmlContent.append("</p>")
+//                }
+//            }
+//
+//            fileInputStream.close()
+//
+//            htmlContent.append("</body></html>")
+//
+//            webView.loadDataWithBaseURL(null, htmlContent.toString(), "text/html", "UTF-8", null)
+//
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            Toast.makeText(this, getString(R.string.can_not_read_file), Toast.LENGTH_SHORT).show()
+//        }
+//
+//    }
 }

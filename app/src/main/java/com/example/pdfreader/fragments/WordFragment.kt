@@ -32,13 +32,12 @@ class WordFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.rcyWordFile.layoutManager = LinearLayoutManager(context)
 
 
-        loadAllFileWord()
     }
 
-    fun loadAllFileWord() {
-        binding.rcyWordFile.layoutManager = LinearLayoutManager(context)
+    fun loadAllFile() {
         val fileHelper = LoadFileFromDevice(requireContext())
         val extensions = listOf("docx")
 
@@ -80,7 +79,6 @@ class WordFragment : Fragment() {
 
 
     fun loadFavoriteFileWord() {
-        binding.rcyWordFile.adapter = null
         val dbHelper = FileDBSQLite(requireContext())
         val fileType = "word"
         val listFileFavorite = dbHelper.getAllFileFavorite(fileType)
