@@ -195,7 +195,7 @@ class DocumentReaderActivity : AppCompatActivity() {
 
 
 
-    private fun convertSlideToHtml(slide: XSLFSlide): String {
+    private fun convertSlideToHtmls(slide: XSLFSlide): String {
         val shapes = slide.shapes
         val stringBuilder = StringBuilder()
 
@@ -215,49 +215,55 @@ class DocumentReaderActivity : AppCompatActivity() {
         return stringBuilder.toString()
     }
 
-//    private fun convertSlideToHtml(slide: XSLFSlide): String {
-//        val shapes = slide.shapes
-//        val stringBuilder = StringBuilder()
-//
-//        for (shape in shapes) {
-//            if (shape is XSLFTextShape) {
-//                for (paragraph in shape.textParagraphs) {
-//                    val paragraphHtml = StringBuilder()
-//                    for (run in paragraph.textRuns) {
-//                        val text = textRun.getRawText()
-//                        val fontSize = run.fontSize
-//                        val fontFamily = run.fontFamily
-//                        val color = run.fontColor
-//                        val isBold = run.isBold
-//                        val isItalic = run.isItalic
-//
-//                        val htmlStyle = buildHtmlStyle(fontSize, fontFamily,
-//                            color.toString(), isBold, isItalic)
-//
-//                        val htmlText = "<span style=\"$htmlStyle\">$text</span>"
-//                        paragraphHtml.append(htmlText)
-//                    }
-//
-//                    stringBuilder.append("<p>$paragraphHtml</p>")
-//                }
-//            }
-//        }
-//
-//        return stringBuilder.toString()
-//    }
-//    private fun buildHtmlStyle(fontSize: Double, fontFamily: String, color: String, isBold: Boolean, isItalic: Boolean): String {
-//        val styleBuilder = StringBuilder()
-//        styleBuilder.append("font-size: ${fontSize}px;")
-//        styleBuilder.append("font-family: $fontFamily;")
-//        styleBuilder.append("color: $color;")
-//        if (isBold) {
-//            styleBuilder.append("font-weight: bold;")
-//        }
-//        if (isItalic) {
-//            styleBuilder.append("font-style: italic;")
-//        }
-//        return styleBuilder.toString()
-//    }
+    private fun convertSlideToHtml(slide: XSLFSlide): String {
+        val shapes = slide.shapes
+        val stringBuilder = StringBuilder()
+
+        for (shape in shapes) {
+            if (shape is XSLFTextShape) {
+                for (paragraph in shape.textParagraphs) {
+                    val paragraphHtml = StringBuilder()
+                    for (run in paragraph.textRuns) {
+                        val text = run.rawText
+                        val fontSize = run.fontSize
+                        val fontFamily = run.fontFamily
+                        val color = R.color.pdf
+                        val isBold = run.isBold
+                        val isItalic = run.isItalic
+
+                        val htmlStyle = buildHtmlStyle(fontSize, fontFamily,
+                            color.toString(), isBold, isItalic)
+
+                        val htmlText = "<span style=\"$htmlStyle\">$text</span>"
+                        paragraphHtml.append(htmlText)
+                    }
+
+                    stringBuilder.append("<p>$paragraphHtml</p>")
+                }
+            } else if (shape is XSLFPictureShape) {
+                val pictureData = shape.pictureData
+                val imageBase64 = Base64.getEncoder().encodeToString(pictureData.data)
+                val mimeType = pictureData.contentType
+                val imgTag = "<img src=\"data:$mimeType;base64,$imageBase64\">"
+                stringBuilder.append(imgTag)
+            }
+        }
+
+        return stringBuilder.toString()
+    }
+    private fun buildHtmlStyle(fontSize: Double, fontFamily: String, color: String, isBold: Boolean, isItalic: Boolean): String {
+        val styleBuilder = StringBuilder()
+        styleBuilder.append("font-size: ${fontSize}px;")
+        styleBuilder.append("font-family: $fontFamily;")
+        styleBuilder.append("color: $color;")
+        if (isBold) {
+            styleBuilder.append("font-weight: bold;")
+        }
+        if (isItalic) {
+            styleBuilder.append("font-style: italic;")
+        }
+        return styleBuilder.toString()
+    }
 
 
 
