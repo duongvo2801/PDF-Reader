@@ -12,6 +12,10 @@ import com.example.pdfreader.databinding.FragmentPptBinding
 import com.example.pdfreader.entities.FileItem
 import com.example.pdfreader.sqlite.FileDBSQLite
 import com.example.pdfreader.utils.LoadFileFromDevice
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -21,12 +25,12 @@ class PptFragment : Fragment() {
 
     private lateinit var binding: FragmentPptBinding
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPptBinding.inflate(inflater, container, false)
+        binding.rcyPptFile.layoutManager = LinearLayoutManager(context)
 
         return binding.root
     }
@@ -34,18 +38,19 @@ class PptFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.rcyPptFile.layoutManager = LinearLayoutManager(context)
+        loadAllFile()
     }
 
 
-
-
     fun loadAllFile() {
-        val fileHelper = LoadFileFromDevice(requireContext())
-        val extensions = listOf("pptx")
-
-        val adapter = FileAdapter(fileHelper.getAllFilesByExtensions(extensions), requireContext())
-        binding.rcyPptFile.adapter = adapter
+        CoroutineScope(Dispatchers.IO).launch {
+            val fileHelper = LoadFileFromDevice(requireContext())
+            val extensions = listOf("pptx")
+            val adapter = FileAdapter(fileHelper.getAllFilesByExtensions(extensions), requireContext())
+            withContext(Dispatchers.Main) {
+                binding.rcyPptFile.adapter = adapter
+            }
+        }
     }
 
     fun loadPdfFileByPath() {

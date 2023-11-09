@@ -9,10 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pdfreader.adapters.FileAdapter
 import com.example.pdfreader.databinding.FragmentPdfBinding
-import com.example.pdfreader.databinding.ItemFileBinding
 import com.example.pdfreader.entities.FileItem
 import com.example.pdfreader.sqlite.FileDBSQLite
 import com.example.pdfreader.utils.LoadFileFromDevice
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -21,56 +24,46 @@ import java.util.Locale
 class PdfFragment : Fragment(){
 
     private lateinit var binding: FragmentPdfBinding
-    private lateinit var item: ItemFileBinding
-    private lateinit var adapter: FileAdapter
-
-
-
-    // sort file
-    private var currentSortOrder: SortOrder = SortOrder.ASCENDING
-    var currentSortType: SortType = SortType.NAME
-
-    enum class SortOrder {
-        ASCENDING, // Tăng dần
-        DESCENDING // Giảm dần
-    }
-
-    enum class SortType {
-        NAME,
-        SIZE,
-        DATE
-    }
-
-
+//    private lateinit var refreshLayout: SwipeRefreshLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPdfBinding.inflate(inflater, container, false)
-        item = ItemFileBinding.inflate(inflater, container, false)
+        binding.rcyPdfFile.layoutManager = LinearLayoutManager(context)
 
-        adapter = FileAdapter(ArrayList(), requireContext())
 
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.rcyPdfFile.layoutManager = LinearLayoutManager(context)
-        binding.rcyPdfFile.adapter = adapter
+//        refreshLayout = view.findViewById(R.id.refreshLayout)
+//
+//        refreshLayout.setOnRefreshListener {
+//
+//            Handler().postDelayed(Runnable {
+//            refreshLayout.isRefreshing = false
+//            }, 2000)
+//        }
 
         loadAllFile()
 
     }
 
     fun loadAllFile() {
-        val fileHelper = LoadFileFromDevice(requireContext())
-        val extensions = listOf("pdf")
+        CoroutineScope(Dispatchers.IO).launch {
+            val fileHelper = LoadFileFromDevice(requireContext())
+            val extensions = listOf("pdf")
+            val adapter = FileAdapter(fileHelper.getAllFilesByExtensions(extensions), requireContext())
 
-        val adapter = FileAdapter(fileHelper.getAllFilesByExtensions(extensions), requireContext())
-        binding.rcyPdfFile.adapter = adapter
+            withContext(Dispatchers.Main) {
+                binding.rcyPdfFile.adapter = adapter
+            }
+        }
 
     }
 

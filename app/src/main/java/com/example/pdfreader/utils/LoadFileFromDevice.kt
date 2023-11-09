@@ -43,7 +43,7 @@ class LoadFileFromDevice (private val context: Context){
                     val fileExtension = file.extension.toLowerCase(Locale.ROOT)
                     if (extensions.contains(fileExtension)) {
                         val lastModifiedTime = file.lastModified()
-                        // Convert the timestamp to a human-readable date format
+
                         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                         val formattedDate = sdf.format(Date(lastModifiedTime))
                         filteredFiles.add(FileItem(file.name, file.path, formattedDate, roundDecimalWithDecimalFormat((file.length() / 1024.0), 2).toString() + "Kb", getFileType(file.name)))
@@ -57,6 +57,7 @@ class LoadFileFromDevice (private val context: Context){
         val lastDotIndex = fileName.lastIndexOf(".")
 
         if (lastDotIndex == -1 || lastDotIndex == 0 || lastDotIndex == fileName.length - 1) {
+            return "other"
         }
 
         val fileExtension = fileName.substring(lastDotIndex + 1)

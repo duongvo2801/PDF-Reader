@@ -1,13 +1,11 @@
 package com.example.pdfreader.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.core.view.size
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pdfreader.R
@@ -35,9 +33,10 @@ class SearchActivity : AppCompatActivity() {
 
         //
         originalList = fileHelper.getAllFilesbyExtensions(listOf("pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"))
-
         adapter = FileAdapter(originalList, this)
+
         rcyFile.adapter = adapter
+
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -52,15 +51,19 @@ class SearchActivity : AppCompatActivity() {
                         adapter.updateFileList(originalList)
                     } else {
                         for (file in originalList) {
-                            if (file.name.lowercase(Locale.ROOT).contains(newText.lowercase(Locale.ROOT))) {
-                                    filteredList.add(file)
-                                }
+                            if (file.name.lowercase(Locale.ROOT)
+                                    .contains(newText.lowercase(Locale.ROOT))
+                            ) {
+                                filteredList.add(file)
+                            }
                         }
+
 
                         adapter.updateFileList(filteredList)
 
+
                         if (filteredList.isEmpty()) {
-                            Toast.makeText(applicationContext, getString(R.string.data_found), Toast.LENGTH_LONG).show()
+                            Toast.makeText( applicationContext, getString(R.string.data_found), Toast.LENGTH_LONG ).show()
                         }
                     }
                 }

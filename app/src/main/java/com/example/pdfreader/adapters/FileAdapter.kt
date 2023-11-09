@@ -41,9 +41,6 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
         notifyDataSetChanged()
     }
 
-    fun getAllFiles(): List<FileItem> {
-        return allFiles
-    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val selectFile = allFiles[position]
@@ -54,6 +51,14 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
             val fileExtension = getFileExtension(selectedFilePath)
             saveSelectedFilePathAndPerformAction(selectedFilePath, fileExtension)
         }
+    }
+
+    private fun getFileExtension(filePath: String): String {
+        val lastDotIndex = filePath.lastIndexOf(".")
+        if (lastDotIndex != -1) {
+            return filePath.substring(lastDotIndex + 1).toLowerCase()
+        }
+        return ""
     }
 
     private fun saveSelectedFilePathAndPerformAction(selectedFilePath: String, fileExtension: String) {
@@ -94,15 +99,6 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
             }
         }
     }
-
-    private fun getFileExtension(filePath: String): String {
-        val lastDotIndex = filePath.lastIndexOf(".")
-        if (lastDotIndex != -1) {
-            return filePath.substring(lastDotIndex + 1).toLowerCase()
-        }
-        return ""
-    }
-
 
 
     override fun getItemCount(): Int {
@@ -234,15 +230,13 @@ class FileAdapter(private var allFiles: List<FileItem>, private val context: Con
             if (file.exists()) {
                 val uri = FileProvider.getUriForFile(
                     context,
-                    context.applicationContext.packageName + ".provider",
+                    "com.example.pdfreader.fileprovider",
                     file
                 )
 
                 val emailIntent = Intent(Intent.ACTION_SEND)
                 emailIntent.type = "application/pdf"
                 emailIntent.putExtra(Intent.EXTRA_STREAM, uri)
-//                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject")
-//                emailIntent.putExtra(Intent.EXTRA_TEXT, "Email body")
 
                 try {
                     context.startActivity(Intent.createChooser(emailIntent, "Send email..."))

@@ -12,6 +12,10 @@ import com.example.pdfreader.databinding.FragmentExcelBinding
 import com.example.pdfreader.entities.FileItem
 import com.example.pdfreader.sqlite.FileDBSQLite
 import com.example.pdfreader.utils.LoadFileFromDevice
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -20,11 +24,13 @@ import java.util.Locale
 class ExcelFragment : Fragment() {
 
     private lateinit var binding: FragmentExcelBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentExcelBinding.inflate(inflater, container, false)
+        binding.rcyExcelFile.layoutManager = LinearLayoutManager(context)
 
         return binding.root
     }
@@ -32,17 +38,19 @@ class ExcelFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.rcyExcelFile.layoutManager = LinearLayoutManager(context)
-
+        loadAllFile()
     }
 
 
     fun loadAllFile() {
-        val fileHelper = LoadFileFromDevice(requireContext())
-        val extensions = listOf("xlsx")
-
-        val adapter = FileAdapter(fileHelper.getAllFilesByExtensions(extensions), requireContext())
-        binding.rcyExcelFile.adapter = adapter
+        CoroutineScope(Dispatchers.IO).launch {
+            val fileHelper = LoadFileFromDevice(requireContext())
+            val extensions = listOf("xlsx")
+            val adapter = FileAdapter(fileHelper.getAllFilesByExtensions(extensions), requireContext())
+            withContext(Dispatchers.Main) {
+                binding.rcyExcelFile.adapter = adapter
+            }
+        }
     }
 
     fun loadPdfFileByPath() {

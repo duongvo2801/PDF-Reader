@@ -4,14 +4,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager
 import com.example.pdfreader.R
+import com.example.pdfreader.adapters.SlidePagerAdapter
 import com.example.pdfreader.databinding.ActivityDocumentReaderBinding
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.xslf.usermodel.XMLSlideShow
@@ -28,6 +29,7 @@ class DocumentReaderActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDocumentReaderBinding
     private lateinit var webView: WebView
     private lateinit var main_table: TableLayout
+    private lateinit var viewPager: ViewPager
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +39,7 @@ class DocumentReaderActivity : AppCompatActivity() {
 
         webView = findViewById(R.id.webView)
         main_table = findViewById(R.id.main_table)
+        viewPager = findViewById(R.id.viewPager)
 
         val filePath = intent.getStringExtra("path")
         if (filePath != null) {
@@ -53,7 +56,7 @@ class DocumentReaderActivity : AppCompatActivity() {
                     // Create a header row for the table
                     val headerRow = TableRow(this)
                     headerRow.setBackgroundColor(ContextCompat.getColor(this, R.color.excel))
-                    headerRow.setPadding(20,15,20,15)
+                    headerRow.setPadding(1,4,1,4)
 
                     for (header in excelData[0]) {
                         val headerText = createTextView(header)
@@ -75,21 +78,24 @@ class DocumentReaderActivity : AppCompatActivity() {
                     try {
                         val ppt = XMLSlideShow(FileInputStream(file))
                         val slides = ppt.slides
-                        val htmlContent = StringBuilder()
+
+                        val htmlContentList = ArrayList<String>()
 
                         for (slide in slides) {
                             val slideHtml = convertSlideToHtml(slide)
-                            htmlContent.append(slideHtml)
+                            htmlContentList.add(slideHtml)
                         }
 
-                        webView.loadDataWithBaseURL(null,
-                            htmlContent.toString(), "text/html", "utf-8", null)
-                        webView.settings.javaScriptEnabled = true
-                        webView.webViewClient = WebViewClient()
+                        val adapter = SlidePagerAdapter(htmlContentList)
+                        viewPager.adapter = adapter
+                        viewPager.currentItem = 0
 
                         binding.pdfview.visibility = View.GONE
                         binding.scrollView.visibility = View.GONE
-                        binding.webView.visibility = View.VISIBLE
+                        binding.webView.visibility = View.GONE
+                        binding.viewPager.visibility = View.VISIBLE
+
+
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Toast.makeText(this, getString(R.string.can_not_read_file), Toast.LENGTH_SHORT).show()
@@ -139,6 +145,7 @@ class DocumentReaderActivity : AppCompatActivity() {
             binding.webView.visibility = View.GONE
             binding.scrollView.visibility = View.VISIBLE
 
+
             fileInputStream.close()
             return excelData
         } catch (e: Exception) {
@@ -151,10 +158,23 @@ class DocumentReaderActivity : AppCompatActivity() {
         val textView = TextView(this)
         textView.text = text
         textView.setPadding(20, 8, 20, 8)
+        textView.setBackgroundResource(R.drawable.border_background) // Sử dụng drawable cho viền
+
+        val params = TableRow.LayoutParams(
+            TableRow.LayoutParams.WRAP_CONTENT,
+            TableRow.LayoutParams.WRAP_CONTENT
+        )
+
+//        params.setMargins(2, 2, 2, 2)
+
+        textView.layoutParams = params
+
         return textView
     }
 
 
+
+    // Word
     private fun readWordFile(file: File) {
         try {
             val fis = FileInputStream(file)
@@ -178,10 +198,13 @@ class DocumentReaderActivity : AppCompatActivity() {
                 content.append(imageTag)
             }
 
+
             fis.close()
 
             binding.pdfview.visibility = View.GONE
             binding.webView.visibility = View.VISIBLE
+            webView.settings.builtInZoomControls = true
+            webView.settings.displayZoomControls = false
 
             val webSettings = binding.webView.settings
             webSettings.javaScriptEnabled = true
@@ -193,28 +216,7 @@ class DocumentReaderActivity : AppCompatActivity() {
         }
     }
 
-
-
-    private fun convertSlideToHtmls(slide: XSLFSlide): String {
-        val shapes = slide.shapes
-        val stringBuilder = StringBuilder()
-
-        for (shape in shapes) {
-            if (shape is XSLFPictureShape) {
-                val pictureData = shape.pictureData
-                val imageBase64 = Base64.getEncoder().encodeToString(pictureData.data)
-                val mimeType = pictureData.contentType
-                val imgTag = "<img src=\"data:$mimeType;base64,$imageBase64\">"
-                stringBuilder.append(imgTag)
-            } else if (shape is XSLFTextShape) {
-                val text = shape.text
-                stringBuilder.append("<p>").append(text).append("</p>")
-            }
-        }
-
-        return stringBuilder.toString()
-    }
-
+    // Powerpoint
     private fun convertSlideToHtml(slide: XSLFSlide): String {
         val shapes = slide.shapes
         val stringBuilder = StringBuilder()
@@ -227,30 +229,31 @@ class DocumentReaderActivity : AppCompatActivity() {
                         val text = run.rawText
                         val fontSize = run.fontSize
                         val fontFamily = run.fontFamily
-                        val color = R.color.pdf
+                        val color = "RRGGBB"
                         val isBold = run.isBold
                         val isItalic = run.isItalic
 
                         val htmlStyle = buildHtmlStyle(fontSize, fontFamily,
-                            color.toString(), isBold, isItalic)
+                            color, isBold, isItalic)
 
                         val htmlText = "<span style=\"$htmlStyle\">$text</span>"
                         paragraphHtml.append(htmlText)
                     }
 
-                    stringBuilder.append("<p>$paragraphHtml</p>")
+                    stringBuilder.append("<div style='display: flex; justify-content: center;'>$paragraphHtml</div>")
                 }
             } else if (shape is XSLFPictureShape) {
                 val pictureData = shape.pictureData
                 val imageBase64 = Base64.getEncoder().encodeToString(pictureData.data)
                 val mimeType = pictureData.contentType
-                val imgTag = "<img src=\"data:$mimeType;base64,$imageBase64\">"
+                val imgTag = "<img style='max-width: 100%; height: auto;' src=\"data:$mimeType;base64,$imageBase64\">"
                 stringBuilder.append(imgTag)
             }
         }
 
         return stringBuilder.toString()
     }
+
     private fun buildHtmlStyle(fontSize: Double, fontFamily: String, color: String, isBold: Boolean, isItalic: Boolean): String {
         val styleBuilder = StringBuilder()
         styleBuilder.append("font-size: ${fontSize}px;")
@@ -264,6 +267,7 @@ class DocumentReaderActivity : AppCompatActivity() {
         }
         return styleBuilder.toString()
     }
+
 
 
 

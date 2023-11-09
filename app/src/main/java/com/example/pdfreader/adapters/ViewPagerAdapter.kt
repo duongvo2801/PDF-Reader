@@ -8,7 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    private val fragments by lazy { arrayListOf<Fragment>() }
+    private val fragments = mutableListOf<Fragment>()
 
     fun addFragments(vararg fragments: Fragment){
         this.fragments.addAll(fragments)

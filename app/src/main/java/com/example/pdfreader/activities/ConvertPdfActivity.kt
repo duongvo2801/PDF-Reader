@@ -49,12 +49,11 @@ class ConvertPdfActivity : AppCompatActivity() {
     private lateinit var imageAdapter: ImageAdapter
 
     //
-//    private lateinit var camera: Camera
     private lateinit var currentPhotoPath: String
 
 
     private val PICK_IMAGES_REQUEST = 100
-    private val CAMERA_PERMISSION_REQUEST = 101
+//    private val CAMERA_PERMISSION_REQUEST = 101
     private val REQUEST_IMAGE_CAPTURE = 1
 
 
@@ -86,6 +85,7 @@ class ConvertPdfActivity : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.please_select_photo), Toast.LENGTH_SHORT).show()
             } else {
                 convertImagesToPdf(images)
+                images.clear()
             }
         }
     }
@@ -202,8 +202,8 @@ class ConvertPdfActivity : AppCompatActivity() {
 //        val pdfDirectory = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
         val pdfFileNameBase = "converted_images"
         val pdfExtension = "pdf"
-        val pageSize = PdfDocument.PageInfo.Builder(595, 842, 1).create() // Kích thước trang A4
-        val pdfDirectory = File(filesDir, "convert-to-pdf")
+        val pageSize = PdfDocument.PageInfo.Builder(595, 842, 1).create()
+        val pdfDirectory = File("/storage/emulated/0/convert-pdf")
         if (!pdfDirectory.exists()) {
             pdfDirectory.mkdir()
         }

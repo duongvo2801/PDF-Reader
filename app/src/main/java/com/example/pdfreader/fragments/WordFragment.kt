@@ -12,6 +12,10 @@ import com.example.pdfreader.databinding.FragmentWordBinding
 import com.example.pdfreader.entities.FileItem
 import com.example.pdfreader.sqlite.FileDBSQLite
 import com.example.pdfreader.utils.LoadFileFromDevice
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -24,25 +28,30 @@ class WordFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
 
         binding = FragmentWordBinding.inflate(inflater, container, false)
+        binding.rcyWordFile.layoutManager = LinearLayoutManager(context)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rcyWordFile.layoutManager = LinearLayoutManager(context)
 
 
+        loadAllFile()
     }
 
     fun loadAllFile() {
-        val fileHelper = LoadFileFromDevice(requireContext())
-        val extensions = listOf("docx")
+        CoroutineScope(Dispatchers.IO).launch {
+            val fileHelper = LoadFileFromDevice(requireContext())
+            val extensions = listOf("docx")
 
-        val adapter = FileAdapter(fileHelper.getAllFilesByExtensions(extensions), requireContext())
-        binding.rcyWordFile.adapter = adapter
+            val adapter = FileAdapter(fileHelper.getAllFilesByExtensions(extensions), requireContext())
+            withContext(Dispatchers.Main) {
+                binding.rcyWordFile.adapter = adapter
+            }
+        }
     }
 
     fun loadPdfFileByPath() {

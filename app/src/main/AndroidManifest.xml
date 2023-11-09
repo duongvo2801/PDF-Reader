@@ -49,22 +49,21 @@
             android:exported="false" />
         <activity
             android:name=".activities.SplashActivity"
-            android:exported="false" >
-
-        </activity>
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+        </activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="your.package.name.fileprovider"
+            android:authorities="com.example.pdfreader.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

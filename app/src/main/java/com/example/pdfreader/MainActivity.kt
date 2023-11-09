@@ -12,7 +12,6 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,7 +23,6 @@ import com.example.pdfreader.activities.ChangeLanguageActivity
 import com.example.pdfreader.activities.ConvertPdfActivity
 import com.example.pdfreader.activities.PremiumActivity
 import com.example.pdfreader.activities.SearchActivity
-import com.example.pdfreader.adapters.FileAdapter
 import com.example.pdfreader.adapters.ViewPagerAdapter
 import com.example.pdfreader.data.Languages
 import com.example.pdfreader.databinding.ActivityMainBinding
@@ -49,7 +47,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var imageToPdfFAB: FloatingActionButton
     lateinit var scanFAB: FloatingActionButton
     lateinit var toolBar: LinearLayout
-    private lateinit var adapter: FileAdapter
     var fabVisible = false
 
     private var currentNavItem = R.id.documentation
@@ -71,13 +68,11 @@ class MainActivity : AppCompatActivity() {
         clickToolbar()
 
 
-        adapter = FileAdapter(ArrayList(), this)
-
         if (ContextCompat.checkSelfPermission(this, manageExternalStoragePermission) == PackageManager.PERMISSION_GRANTED) {
 
-            Toast.makeText(this@MainActivity, getString(R.string.access_granted), Toast.LENGTH_SHORT).show()
-        } else {
             requestPermission()
+        } else {
+            Toast.makeText(this@MainActivity, getString(R.string.access_granted), Toast.LENGTH_SHORT).show()
         }
 
 
@@ -99,6 +94,7 @@ class MainActivity : AppCompatActivity() {
         Log.e("DEBUG", lang)
         Languages.loadLocale(this)
     }
+
     private fun setupTablayout() {
         val tabTitles = listOf("PDF", "WORD", "EXCEL", "PPT")
 
@@ -169,6 +165,7 @@ class MainActivity : AppCompatActivity() {
             offscreenPageLimit = pagerAdapter.itemCount
         }
     }
+
 
     private fun setupBottomNavigition() {
         binding.navigationmenu.setOnItemSelectedListener {item ->
@@ -243,7 +240,6 @@ class MainActivity : AppCompatActivity() {
             .setMessage(getString(R.string.file_access_denied))
             .setCancelable(false)
             .setPositiveButton(R.string.setting) { _, _ ->
-                // Mở màn hình cài đặt ứng dụng để cấp quyền
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 val uri = Uri.fromParts("package", packageName, null)
                 intent.data = uri
@@ -274,26 +270,7 @@ class MainActivity : AppCompatActivity() {
         search.setOnClickListener {
             startActivity(Intent(this, SearchActivity::class.java))
         }
-        sort.setOnClickListener {
-            val popupMenu: PopupMenu = PopupMenu(this, sort)
-            popupMenu.menuInflater.inflate(R.menu.popup_toolbar, popupMenu.menu)
-            popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.toolbarName -> {
-                        Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
-                    }
-                    R.id.toolbarEdit -> {
-                        Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
-                    }
-                    R.id.toolbarSize -> {
-                        Toast.makeText(this@MainActivity, "" + item.title, Toast.LENGTH_SHORT).show()
-                    }
 
-                }
-                true
-            })
-            popupMenu.show()
-        }
     }
 
     fun setFAB() {
