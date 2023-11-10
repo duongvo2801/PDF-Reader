@@ -129,7 +129,7 @@ class ConvertPdfActivity : AppCompatActivity() {
                 photoFile?.also {
                     val photoURI: Uri = FileProvider.getUriForFile(
                         this,
-                        "your.package.name.fileprovider",
+                        "com.example.pdfreader.fileprovider",
                         it
                     )
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)

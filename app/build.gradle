@@ -34,7 +34,6 @@ android {
         viewBinding = true
     }
 }
-
 dependencies {
 
     implementation("androidx.core:core-ktx:1.9.0")
@@ -70,6 +69,11 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.+'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
 
+    implementation  'com.squareup.okio:okio:1.11.0'
+    implementation  'com.squareup.okhttp3:okhttp:3.5.0'
+    implementation  'com.squareup.retrofit2:retrofit:2.1.0'
+    implementation  'com.squareup.retrofit2:converter-gson:2.1.0'
+
     // Glide - Lib image
     implementation 'com.github.bumptech.glide:glide:4.16.0'
 
@@ -83,9 +87,6 @@ dependencies {
     implementation 'org.apache.poi:poi:5.2.3'
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
     implementation 'org.apache.poi:poi-scratchpad:5.2.3'
-    
-
-//    implementation group: 'org.apache.poi', name: 'poi', version: '5.2.0'
 
 
 
