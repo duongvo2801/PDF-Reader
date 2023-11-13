@@ -66,4 +66,5 @@
     <string name="sure_delete_this_file">Bạn có chắc chắn muốn xóa tệp này không?</string>
     <string name="file_deleted">Tệp đã được xóa</string>
     <string name="failed_delete_file">Xóa tệp thất bại</string>
+    <string name="access_all_fordel">Ứng dụng cần quyền truy cập tất cả để hoạt động</string>
 </resources>

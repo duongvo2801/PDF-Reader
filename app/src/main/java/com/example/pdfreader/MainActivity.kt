@@ -3,21 +3,21 @@ package com.example.pdfreader
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.pdfreader.activities.ChangeLanguageActivity
 import com.example.pdfreader.activities.ConvertPdfActivity
@@ -32,6 +32,12 @@ import com.example.pptreader.fragments.ExcelFragment
 import com.example.pptreader.fragments.PptFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.DexterBuilder
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 
 class MainActivity : AppCompatActivity() {
     //
@@ -49,6 +55,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var toolBar: LinearLayout
     var fabVisible = false
 
+    //
+    lateinit var dexter: DexterBuilder
+
     private var currentNavItem = R.id.documentation
 
 
@@ -58,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -68,13 +78,14 @@ class MainActivity : AppCompatActivity() {
         clickToolbar()
 
 
-        if (ContextCompat.checkSelfPermission(this, manageExternalStoragePermission) == PackageManager.PERMISSION_GRANTED) {
-
-            requestPermission()
+        if (Environment.isExternalStorageManager()) {
+            getPermission()
         } else {
-            Toast.makeText(this@MainActivity, getString(R.string.access_granted), Toast.LENGTH_SHORT).show()
+            val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+            val uri: Uri = Uri.fromParts("package", packageName, null)
+            intent.data = uri
+            startActivity(intent)
         }
-
 
         setupTablayout()
         setupViewPager()
@@ -204,51 +215,45 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val manageExternalStoragePermission = Manifest.permission.MANAGE_EXTERNAL_STORAGE
+    private fun getPermission() {
+        dexter = Dexter.withContext(this)
+            .withPermissions(
+                Manifest.permission.CAMERA
+            ).withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                    report.let {
+                        if (report.areAllPermissionsGranted()) {
+                            Toast.makeText(this@MainActivity, R.string.permissions_granted, Toast.LENGTH_SHORT).show()
+                        } else {
+                            AlertDialog.Builder(this@MainActivity).apply {
+                                setMessage(getString(R.string.please_permissions))
+                                    .setCancelable(false)
+                                    .setPositiveButton(getString(R.string.setting)) { _, _ ->
+                                        val reqIntent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                            .apply {
+                                                val uri = Uri.fromParts("package", packageName, null)
+                                                data = uri
+                                            }
+                                        resultLauncher.launch(reqIntent)
+                                    }
+                                val alert = this.create()
+                                alert.show()
+                            }
+                        }
+                    }
+                }
 
-    private val requestPermissionLauncher: ActivityResultLauncher<String> = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            Toast.makeText(this@MainActivity, getString(R.string.access_granted), Toast.LENGTH_SHORT).show()
-        } else {
-            showPermissionDeniedDialog()
-        }
-    }
-    private fun requestPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, manageExternalStoragePermission)) {
-            showPermissionRationale()
-        } else {
-            requestPermissionLauncher.launch(manageExternalStoragePermission)
-        }
-    }
-
-    private fun showPermissionRationale() {
-        AlertDialog.Builder(this)
-            .setMessage("Ứng dụng cần quyền truy cập tất cả các tệp để hoạt động.")
-            .setCancelable(false)
-            .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                // Yêu cầu quyền
-                requestPermissionLauncher.launch(manageExternalStoragePermission)
+                override fun onPermissionRationaleShouldBeShown(permissions: List<PermissionRequest?>?, token: PermissionToken?) {
+                    token?.continuePermissionRequest()
+                }
+            }).withErrorListener {
+                Toast.makeText(this, it.name, Toast.LENGTH_SHORT).show()
             }
-            .show()
+        dexter.check()
     }
 
-    private fun showPermissionDeniedDialog() {
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.grant_access))
-            .setMessage(getString(R.string.file_access_denied))
-            .setCancelable(false)
-            .setPositiveButton(R.string.setting) { _, _ ->
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                val uri = Uri.fromParts("package", packageName, null)
-                intent.data = uri
-                startActivity(intent)
-            }
-            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
-
-            }
-            .show()
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        dexter.check()
     }
 
     private fun clickToolbar() {

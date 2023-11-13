@@ -34,7 +34,6 @@ class ChangeLanguageActivity : AppCompatActivity() {
         Languages.changeLang(lang, this)
         Log.e("LANG", lang)
 
-        // recreate screen
         recreate()
     }
 

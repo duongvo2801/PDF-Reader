@@ -24,7 +24,6 @@ import java.util.Locale
 class PdfFragment : Fragment(){
 
     private lateinit var binding: FragmentPdfBinding
-//    private lateinit var refreshLayout: SwipeRefreshLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,15 +39,6 @@ class PdfFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        refreshLayout = view.findViewById(R.id.refreshLayout)
-//
-//        refreshLayout.setOnRefreshListener {
-//
-//            Handler().postDelayed(Runnable {
-//            refreshLayout.isRefreshing = false
-//            }, 2000)
-//        }
 
         loadAllFile()
 

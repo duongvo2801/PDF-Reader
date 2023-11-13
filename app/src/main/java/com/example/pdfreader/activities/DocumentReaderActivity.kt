@@ -158,14 +158,12 @@ class DocumentReaderActivity : AppCompatActivity() {
         val textView = TextView(this)
         textView.text = text
         textView.setPadding(20, 8, 20, 8)
-        textView.setBackgroundResource(R.drawable.border_background) // Sử dụng drawable cho viền
+        textView.setBackgroundResource(R.drawable.border_background)
 
         val params = TableRow.LayoutParams(
             TableRow.LayoutParams.WRAP_CONTENT,
             TableRow.LayoutParams.WRAP_CONTENT
         )
-
-//        params.setMargins(2, 2, 2, 2)
 
         textView.layoutParams = params
 
@@ -173,8 +171,47 @@ class DocumentReaderActivity : AppCompatActivity() {
     }
 
 
-
     // Word
+//    fun convertWordToPdf(inputWordFilePath: String, outputPdfFilePath: String) {
+//        try {
+//            val inputStream: InputStream = FileInputStream(inputWordFilePath)
+//            val document = Document(inputStream)
+//
+//            document.save(outputPdfFilePath, SaveFormat.PDF)
+//
+//            inputStream.close()
+//
+//        } catch (e: Exception) {
+//
+//        }
+//    }
+//
+//    fun readWordFile(file: File) {
+//        try {
+//            if (!file.exists()) {
+//                println("File không tồn tại.")
+//                return
+//            }
+//
+//            val fileExtension = file.extension.toLowerCase()
+//            if (fileExtension != "doc" && fileExtension != "docx") {
+//                Toast.makeText(this, "Định dạng tệp không hỗ trợ", Toast.LENGTH_SHORT).show()
+//                return
+//            }
+//
+//            val outputPdfFolderPath = "/storage/emulated/0/convert-pdf"
+//            val outputPdfFilePath = "${outputPdfFolderPath}${file.nameWithoutExtension}.pdf"
+//
+//            convertWordToPdf(file.toString(), outputPdfFilePath)
+//
+//            Log.d("qqq", outputPdfFilePath.toString())
+//
+//            Toast.makeText(this, "Chuyển đổi thành công ", Toast.LENGTH_SHORT).show()
+//        } catch (e: Exception) {
+//            Toast.makeText(this, "Thât bại " + {e.message}, Toast.LENGTH_SHORT).show()
+//        }
+//    }
+
     private fun readWordFile(file: File) {
         try {
             val fis = FileInputStream(file)

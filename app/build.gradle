@@ -88,6 +88,7 @@ dependencies {
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
     implementation 'org.apache.poi:poi-scratchpad:5.2.3'
 
+    implementation files('libs/aspose-words-23.8-jdk17.jar')
 
 
 

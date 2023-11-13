@@ -10,15 +10,18 @@ import android.graphics.BitmapFactory
 import android.graphics.RectF
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -53,10 +56,10 @@ class ConvertPdfActivity : AppCompatActivity() {
 
 
     private val PICK_IMAGES_REQUEST = 100
-//    private val CAMERA_PERMISSION_REQUEST = 101
     private val REQUEST_IMAGE_CAPTURE = 1
 
 
+    @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("MissingInflatedId", "WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,8 +73,19 @@ class ConvertPdfActivity : AppCompatActivity() {
         recyclerView.adapter = imageAdapter
         pdfDocument = PdfDocument()
 
+        if (Environment.isExternalStorageManager()) {
+            getPermission()
+        } else {
+            //request for the permission
+            val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+            val uri: Uri = Uri.fromParts("package", packageName, null)
+            intent.data = uri
+            startActivity(intent)
+        }
 
-        getPermission()
+
+
+
         goBackHome()
         popupMenu()
         convertPdf()
@@ -251,9 +265,7 @@ class ConvertPdfActivity : AppCompatActivity() {
     private fun getPermission() {
         dexter = Dexter.withContext(this)
             .withPermissions(
-                Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
+                Manifest.permission.CAMERA
             ).withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport) {
                     report.let {
