@@ -6,17 +6,13 @@
     android:id="@+id/fragment_excel"
     tools:context=".fragments.ExcelFragment">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcy_excel_file"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 </FrameLayout>

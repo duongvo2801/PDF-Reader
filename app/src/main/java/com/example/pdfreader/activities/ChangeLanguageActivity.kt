@@ -44,6 +44,4 @@ class ChangeLanguageActivity : AppCompatActivity() {
         }
     }
 
-
-
 }

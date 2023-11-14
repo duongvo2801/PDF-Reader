@@ -14,7 +14,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.provider.Settings
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
@@ -27,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pdfreader.MainActivity
 import com.example.pdfreader.R
 import com.example.pdfreader.adapters.ImageAdapter
 import com.karumi.dexter.Dexter
@@ -73,17 +73,17 @@ class ConvertPdfActivity : AppCompatActivity() {
         recyclerView.adapter = imageAdapter
         pdfDocument = PdfDocument()
 
-        if (Environment.isExternalStorageManager()) {
-            getPermission()
-        } else {
-            //request for the permission
-            val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-            val uri: Uri = Uri.fromParts("package", packageName, null)
-            intent.data = uri
-            startActivity(intent)
-        }
+//        if (Environment.isExternalStorageManager()) {
+//            getPermission()
+//        } else {
+//            //request for the permission
+//            val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+//            val uri: Uri = Uri.fromParts("package", packageName, null)
+//            intent.data = uri
+//            startActivity(intent)
+//        }
 
-
+        getPermission()
 
 
         goBackHome()
@@ -99,7 +99,7 @@ class ConvertPdfActivity : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.please_select_photo), Toast.LENGTH_SHORT).show()
             } else {
                 convertImagesToPdf(images)
-                images.clear()
+                startActivity(Intent(this, MainActivity::class.java))
             }
         }
     }

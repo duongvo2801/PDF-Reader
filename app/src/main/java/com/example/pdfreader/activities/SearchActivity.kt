@@ -58,7 +58,6 @@ class SearchActivity : AppCompatActivity() {
                             }
                         }
 
-
                         adapter.updateFileList(filteredList)
 
 

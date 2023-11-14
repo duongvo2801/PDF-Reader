@@ -2,6 +2,7 @@ package com.example.pdfreader.activities
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.widget.TableLayout
@@ -11,6 +12,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
+import com.aspose.words.Document
+import com.aspose.words.SaveFormat
 import com.example.pdfreader.R
 import com.example.pdfreader.adapters.SlidePagerAdapter
 import com.example.pdfreader.databinding.ActivityDocumentReaderBinding
@@ -22,15 +25,15 @@ import org.apache.poi.xslf.usermodel.XSLFTextShape
 import org.apache.poi.xwpf.usermodel.XWPFDocument
 import java.io.File
 import java.io.FileInputStream
+import java.io.InputStream
 import java.util.Base64
 
 
 class DocumentReaderActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDocumentReaderBinding
     private lateinit var webView: WebView
-    private lateinit var main_table: TableLayout
+    private lateinit var mainTable: TableLayout
     private lateinit var viewPager: ViewPager
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,67 +41,71 @@ class DocumentReaderActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         webView = findViewById(R.id.webView)
-        main_table = findViewById(R.id.main_table)
+        mainTable = findViewById(R.id.main_table)
         viewPager = findViewById(R.id.viewPager)
 
         val filePath = intent.getStringExtra("path")
         if (filePath != null) {
             val file = File(filePath)
             if (file.exists()) {
-                val fileExtension = file.extension.toLowerCase()
-                if (fileExtension == "pdf") {
-                    readPdfFile(file)
-                } else if (fileExtension == "docx" || fileExtension == "doc") {
-                    readWordFile(file)
-                } else if (fileExtension == "xlsx" || fileExtension == "xls") {
-                    val excelData = readExcelFile(file)
-
-                    // Create a header row for the table
-                    val headerRow = TableRow(this)
-                    headerRow.setBackgroundColor(ContextCompat.getColor(this, R.color.excel))
-                    headerRow.setPadding(1,4,1,4)
-
-                    for (header in excelData[0]) {
-                        val headerText = createTextView(header)
-                        headerRow.addView(headerText)
+                when (file.extension.toLowerCase()) {
+                    "pdf" -> {
+                        readPdfFile(file)
                     }
-                    main_table.addView(headerRow)
-                    for (i in 1 until excelData.size) {
-                        val dataRow = TableRow(this)
-                        val rowData = excelData[i]
-
-                        for (data in rowData) {
-                            val dataText = createTextView(data)
-                            dataRow.addView(dataText)
-                        }
-
-                        main_table.addView(dataRow)
+                    "docx", "doc" -> {
+                        readWordFile(file)
                     }
-                } else if (fileExtension == "pptx" || fileExtension == "ppt") {
-                    try {
-                        val ppt = XMLSlideShow(FileInputStream(file))
-                        val slides = ppt.slides
+                    "xlsx", "xls" -> {
+                        val excelData = readExcelFile(file)
 
-                        val htmlContentList = ArrayList<String>()
+                        // Create a header row for the table
+                        val headerRow = TableRow(this)
+                        headerRow.setBackgroundColor(ContextCompat.getColor(this, R.color.excel))
+                        headerRow.setPadding(1,4,1,4)
 
-                        for (slide in slides) {
-                            val slideHtml = convertSlideToHtml(slide)
-                            htmlContentList.add(slideHtml)
+                        for (header in excelData[0]) {
+                            val headerText = createTextView(header)
+                            headerRow.addView(headerText)
                         }
+                        mainTable.addView(headerRow)
+                        for (i in 1 until excelData.size) {
+                            val dataRow = TableRow(this)
+                            val rowData = excelData[i]
 
-                        val adapter = SlidePagerAdapter(htmlContentList)
-                        viewPager.adapter = adapter
-                        viewPager.currentItem = 0
+                            for (data in rowData) {
+                                val dataText = createTextView(data)
+                                dataRow.addView(dataText)
+                            }
 
-                        binding.pdfview.visibility = View.GONE
-                        binding.scrollView.visibility = View.GONE
-                        binding.webView.visibility = View.GONE
-                        binding.viewPager.visibility = View.VISIBLE
+                            mainTable.addView(dataRow)
+                        }
+                    }
+                    "pptx", "ppt" -> {
+                        try {
+                            val ppt = XMLSlideShow(FileInputStream(file))
+                            val slides = ppt.slides
+
+                            val htmlContentList = ArrayList<String>()
+
+                            for (slide in slides) {
+                                val slideHtml = convertSlideToHtml(slide)
+                                htmlContentList.add(slideHtml)
+                            }
+
+                            val adapter = SlidePagerAdapter(htmlContentList)
+                            viewPager.adapter = adapter
+                            viewPager.currentItem = 0
+
+                            binding.pdfview.visibility = View.GONE
+                            binding.scrollView.visibility = View.GONE
+                            binding.webView.visibility = View.GONE
+                            binding.viewPager.visibility = View.VISIBLE
 
 
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        Toast.makeText(this, getString(R.string.can_not_read_file), Toast.LENGTH_SHORT).show()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            Toast.makeText(this, getString(R.string.can_not_read_file), Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
@@ -170,47 +177,49 @@ class DocumentReaderActivity : AppCompatActivity() {
         return textView
     }
 
-
     // Word
-//    fun convertWordToPdf(inputWordFilePath: String, outputPdfFilePath: String) {
-//        try {
-//            val inputStream: InputStream = FileInputStream(inputWordFilePath)
-//            val document = Document(inputStream)
-//
-//            document.save(outputPdfFilePath, SaveFormat.PDF)
-//
-//            inputStream.close()
-//
-//        } catch (e: Exception) {
-//
-//        }
-//    }
-//
-//    fun readWordFile(file: File) {
-//        try {
-//            if (!file.exists()) {
-//                println("File không tồn tại.")
-//                return
-//            }
-//
-//            val fileExtension = file.extension.toLowerCase()
-//            if (fileExtension != "doc" && fileExtension != "docx") {
-//                Toast.makeText(this, "Định dạng tệp không hỗ trợ", Toast.LENGTH_SHORT).show()
-//                return
-//            }
-//
-//            val outputPdfFolderPath = "/storage/emulated/0/convert-pdf"
-//            val outputPdfFilePath = "${outputPdfFolderPath}${file.nameWithoutExtension}.pdf"
-//
-//            convertWordToPdf(file.toString(), outputPdfFilePath)
-//
-//            Log.d("qqq", outputPdfFilePath.toString())
-//
-//            Toast.makeText(this, "Chuyển đổi thành công ", Toast.LENGTH_SHORT).show()
-//        } catch (e: Exception) {
-//            Toast.makeText(this, "Thât bại " + {e.message}, Toast.LENGTH_SHORT).show()
-//        }
-//    }
+    private fun convertWordToPdf(inputWordFilePath: String, outputPdfFilePath: String) {
+        try {
+            val inputStream: InputStream = FileInputStream(inputWordFilePath)
+            val document = Document(inputStream)
+
+            document.save(outputPdfFilePath, SaveFormat.PDF)
+
+            inputStream.close()
+
+        } catch (e: Exception) {
+
+        }
+    }
+    private fun readWordFiles(file: File) {
+        try {
+            if (!file.exists()) {
+                println("File không tồn tại.")
+                return
+            }
+
+            val fileExtension = file.extension.toLowerCase()
+            if (fileExtension != "doc" && fileExtension != "docx") {
+                Toast.makeText(this, "Định dạng tệp không hỗ trợ", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            val outputPdfFolderPath = File("/storage/emulated/0/convert-pdf")
+            if (!outputPdfFolderPath.exists()) {
+                outputPdfFolderPath.mkdirs()
+            }
+            val outputPdfFilePath = "${outputPdfFolderPath}-${file.nameWithoutExtension}.pdf"
+
+            convertWordToPdf(file.toString(), outputPdfFilePath)
+
+            Log.d("qqq", outputPdfFilePath.toString())
+
+            Toast.makeText(this, "Chuyển đổi thành công ", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Thất bại " + e.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     private fun readWordFile(file: File) {
         try {
@@ -234,7 +243,6 @@ class DocumentReaderActivity : AppCompatActivity() {
                 val imageTag = "<img src='data:image/png;base64,$base64Image' width='100%' height='auto'/>"
                 content.append(imageTag)
             }
-
 
             fis.close()
 
@@ -304,8 +312,5 @@ class DocumentReaderActivity : AppCompatActivity() {
         }
         return styleBuilder.toString()
     }
-
-
-
 
 }

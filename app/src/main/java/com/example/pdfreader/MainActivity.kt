@@ -7,8 +7,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -78,27 +76,32 @@ class MainActivity : AppCompatActivity() {
         clickToolbar()
 
 
-        if (Environment.isExternalStorageManager()) {
-            getPermission()
-        } else {
-            val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-            val uri: Uri = Uri.fromParts("package", packageName, null)
-            intent.data = uri
-            startActivity(intent)
-        }
+//        if (Environment.isExternalStorageManager()) {
+//            getPermission()
+//        } else {
+//            val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+//            val uri: Uri = Uri.fromParts("package", packageName, null)
+//            intent.data = uri
+//            startActivity(intent)
+//        }
+
+        getPermission()
 
         setupTablayout()
         setupViewPager()
         setupBottomNavigition()
 
         setFAB()
-
     }
 
 
     override fun onResume() {
         super.onResume()
 
+        setupLanguage()
+    }
+
+    private fun setupLanguage() {
         // Change language
         val prefs = getSharedPreferences("CommonPrefs", Activity.MODE_PRIVATE)
         val lang = prefs.getString("Language", "en") ?: "en"
@@ -306,12 +309,12 @@ class MainActivity : AppCompatActivity() {
 
         imageToPdfFAB.setOnClickListener {
             startActivity(Intent(this, ConvertPdfActivity::class.java))
-            Toast.makeText(this@MainActivity, getString(R.string.image_to_pdf), Toast.LENGTH_LONG).show()
+//            Toast.makeText(this@MainActivity, getString(R.string.image_to_pdf), Toast.LENGTH_LONG).show()
         }
 
         scanFAB.setOnClickListener {
             startActivity(Intent(this, ConvertPdfActivity::class.java))
-            Toast.makeText(this@MainActivity, getString(R.string.scan_document), Toast.LENGTH_LONG).show()
+//            Toast.makeText(this@MainActivity, getString(R.string.scan_document), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -319,9 +322,9 @@ class MainActivity : AppCompatActivity() {
         if (doubleClickToExit + 1500 > System.currentTimeMillis())  {
             super.onBackPressed()
         } else {
-            Toast.makeText(getBaseContext(),
-                getString(R.string.double_click_to_exit), Toast.LENGTH_SHORT).show();
-        }
-        doubleClickToExit = System.currentTimeMillis()
+                Toast.makeText(getBaseContext(),
+                    getString(R.string.double_click_to_exit), Toast.LENGTH_SHORT).show();
+            }
+            doubleClickToExit = System.currentTimeMillis()
     }
 }
